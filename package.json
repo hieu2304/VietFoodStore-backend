@@ -1,0 +1,32 @@
+{
+  "name": "vietfoodstore-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "App.js",
+  "dependencies": {
+    "body-parse": "^0.1.0",
+    "body-parser": "^1.19.0",
+    "cookie-session": "^1.4.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "joi": "^17.4.2",
+    "knex": "^0.95.9",
+    "morgan": "^1.10.0",
+    "mysql2": "^2.2.5",
+    "sequelize": "^6.6.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hieu2304/VietFoodStore-backend.git"
+  },
+  "author": "dangtrunghieu2304@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hieu2304/VietFoodStore-backend/issues"
+  },
+  "homepage": "https://github.com/hieu2304/VietFoodStore-backend#readme"
+}
