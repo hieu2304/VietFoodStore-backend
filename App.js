@@ -3,7 +3,7 @@ const cors = require("cors");
 const cookieSession = require('cookie-session');
 const bodyParser = require('body-parser')
 const app = express();
-const  morgan  = require('morgan')
+const morgan  = require('morgan')
 
 app.use(
     cookieSession({
@@ -23,7 +23,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/api', require('./api'));
+// app.use('/api', require('./api'));
 app.get("/", (req, res) => {
     res.json({ message: "Return server app" });
 });
