@@ -4,6 +4,7 @@
   "description": "",
   "main": "App.js",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "body-parse": "^0.1.0",
     "body-parser": "^1.19.0",
     "cookie-session": "^1.4.0",
@@ -15,6 +16,7 @@
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.95.9",
     "morgan": "^1.10.0",
+    "mysql": "^2.18.1",
     "mysql2": "^2.2.5",
     "sequelize": "^6.6.5"
   },
