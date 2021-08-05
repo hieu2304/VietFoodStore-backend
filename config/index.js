@@ -13,6 +13,10 @@ config.development = {
     auth:{
         tokenSecretKey:'!@#$%^&*()',
         refreshTokenSecretKey:'K5HASDCBK',
+    },
+    mail:{
+        user: 'vietfoodstorebot@gmail.com',
+         password: 'vietfoodstore789'
     }
 };
 
