@@ -4,6 +4,9 @@ const cookieSession = require('cookie-session');
 const bodyParser = require('body-parser')
 const app = express();
 const morgan  = require('morgan')
+if (process.env.NODE_ENV !== 'production') {
+	require('dotenv').config();
+}
 
 app.use(
     cookieSession({
@@ -28,7 +31,8 @@ app.get("/", (req, res) => {
     res.json({ message: "Return server app" });
 });
 
-const PORT = 3001;
-app.listen(PORT, () => {
-    console.log(`Listening on port: ${PORT}`);
+const port = process.env.PORT || 3001;
+
+app.listen(port, () => {
+    console.log(`Listening on port: ${port}`);
   });

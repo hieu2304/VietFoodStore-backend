@@ -1,11 +1,9 @@
 const Account = require('../model/account.model');
 const asyncHandler = require('express-async-handler');
 const jwtHelper = require('../lib/jwt');
-const authConfigs = require('../config/index');
-const authConfig = authConfigs[authConfigs.environment].auth;
 
 module.exports.getAll = asyncHandler(async function (req, res, next) {
-    let currentUser = jwtHelper.decodeToken(req.headers['x-access-token'], authConfig.tokenSecretKey);
+    let currentUser = jwtHelper.decodeToken(req.headers['x-access-token'], process.env.SECRET_KEY);
     if (!currentUser) {
         return res.status(401).send({ message: 'Invalid Token' });
     }
@@ -18,7 +16,7 @@ module.exports.getAll = asyncHandler(async function (req, res, next) {
 });
 
 module.exports.getAccount = asyncHandler(async function (req, res, next) {
-    let currentUser = jwtHelper.decodeToken(req.headers['x-access-token'], authConfig.tokenSecretKey);
+    let currentUser = jwtHelper.decodeToken(req.headers['x-access-token'],process.env.SECRET_KEY);
     if (!currentUser) {
         return res.status(401).send({ message: 'Invalid Token' });
     }
@@ -33,7 +31,7 @@ module.exports.getAccount = asyncHandler(async function (req, res, next) {
 });
 
 module.exports.updateRole = asyncHandler(async function (req, res, next) {
-    let currentUser = jwtHelper.decodeToken(req.headers['x-access-token'], authConfig.tokenSecretKey);
+    let currentUser = jwtHelper.decodeToken(req.headers['x-access-token'],  process.env.SECRET_KEY);
     if (!currentUser) {
         return res.status(401).send({ message: 'Invalid Token' });
     }

@@ -19,8 +19,8 @@ module.exports.login = async (req, res) => {
             })
         } else {
             const result = await Account.login(value.email, value.passWord);
-            const accessToken = jwtHelper.generateToken(result, authConfig.tokenSecretKey, '1h');
-            const refreshToken = jwtHelper.generateToken(result, authConfig.refreshTokenSecretKey, '30D');
+            const accessToken = jwtHelper.generateToken(result,  process.env.SECRET_KEY, '1h');
+            const refreshToken = jwtHelper.generateToken(result,  process.env.REFRESH_KEY, '30D');
             await Account.addRefreshToken(value.email, refreshToken);
             return res.status(200).json({ accessToken, refreshToken });
         }
@@ -79,7 +79,7 @@ module.exports.refreshToken = async (req, res) => {
                 id: result[0].id,
                 role_id: result[0].role_id
             }
-            const accessToken = jwtHelper.generateToken(dataUser, authConfig.tokenSecretKey, '1h');
+            const accessToken = jwtHelper.generateToken(dataUser, process.env.SECRET_KEY, '1h');
             return res.status(200).json({ accessToken });
         } catch (error) {
             res.status(403).json({
