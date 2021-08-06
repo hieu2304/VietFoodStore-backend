@@ -7,5 +7,6 @@ router.use('/accounts',require('./router/account.router'));
 router.use('/cities',require('./router/cities.router'));
 router.use('/districts',require('./router/districts.router'));
 router.use('/authentication',require('./router/auth.router'));
+router.use('/stocks',require('./router/stock.router'));
 
 module.exports = router;
