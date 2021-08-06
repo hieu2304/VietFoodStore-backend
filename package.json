@@ -20,6 +20,8 @@
     "mysql": "^2.18.1",
     "mysql2": "^2.2.5",
     "nodemailer": "^6.6.3",
+    "pg": "^8.7.1",
+    "postgresql": "0.0.1",
     "sequelize": "^6.6.5"
   },
   "devDependencies": {},
