@@ -2,7 +2,7 @@ const asyncHandler = require('express-async-handler');
 const jwt = require('jsonwebtoken');
 
 module.exports.isAuth = async (req, res, next) => {
-	const tokenFromClient = req.body.token || req.query.token || req.headers["x-access-token"];
+	const tokenFromClient = req.body.token || req.query.token || req.headers["authorization"];
 	if (tokenFromClient) {
 	  try {
 		const decoded = await jwt.verify(tokenFromClient, process.env.SECRET_KEY);

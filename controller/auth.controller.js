@@ -111,7 +111,7 @@ module.exports.VerifyEmail = async (req, res) => {
 };
 
 /**
- * forgotPass
+ * controller forgotPass
  * @param {*} req 
  * @param {*} res 
  */

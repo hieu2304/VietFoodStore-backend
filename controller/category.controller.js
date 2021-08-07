@@ -20,7 +20,6 @@ module.exports.getById = asyncHandler(async function (req, res, next) {
 module.exports.add = asyncHandler(async function (req, res, next) {
     const category = req.body;
     const result = await Category.add(category);
-    console.log(result)
     category.id = result[0];
     res.json(category);
 });
