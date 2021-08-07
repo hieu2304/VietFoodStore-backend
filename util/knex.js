@@ -3,12 +3,7 @@ const knex = require('knex');
 const knexClient = knex({
     client: 'pg',
     connection: process.env.DATABASE_URL,
-    ssl: true,
-    extra: {
-        ssl: {
-            rejectUnauthorized: false,
-        },
-    },
+    ssl: { rejectUnauthorized },
 });
 
 knexClient.on('query', function (queryData) {

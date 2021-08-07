@@ -35,7 +35,7 @@ module.exports.login = async (req, res) => {
  */
 module.exports.register = async (req, res) => {
     try {
-        const { error, value } = validate.checkAuth(req.body);
+        const { error, value } = validate.checkRegister(req.body);
         if (error) {
             res.status(422).json({
                 message: 'Invalid request',
