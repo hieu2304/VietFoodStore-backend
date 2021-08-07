@@ -1,6 +1,7 @@
 const Account = require('../model/account.model');
 const asyncHandler = require('express-async-handler');
 const jwtHelper = require('../lib/jwt');
+const validate = require('../lib/validate');
 
 /**
  * controller get list account
