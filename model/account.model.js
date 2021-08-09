@@ -17,8 +17,14 @@ async function updateRole(params) {
     return data;
 }
 
+async function deleteAccount(params) {
+    const data = await knex('accounts').update('status',1).where('id',params);
+    return data;
+}
+
 module.exports = {
     getAll,
     getAccount,
-    updateRole
+    updateRole,
+    deleteAccount
 };

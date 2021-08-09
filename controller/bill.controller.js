@@ -21,7 +21,7 @@ module.exports.getDetails = asyncHandler(async function (req, res, next) {
             if (result.length === 0) {
                 return res.status(404).json({
                     listBillDetail: [],
-                    statusCode: 1
+                    statusCode: 1,
                 })
             }
             return res.status(200).json({
@@ -40,7 +40,7 @@ module.exports.getDetails = asyncHandler(async function (req, res, next) {
  * @param {*} req 
  * @param {*} res 
  */
-module.exports.getDetails = asyncHandler(async function (req, res, next) {
+module.exports.getBill = asyncHandler(async function (req, res, next) {
     const id = req.query.id || req.params.id || 0;
     const result = await Bill.getList(id)
     if (result.length === 0) {

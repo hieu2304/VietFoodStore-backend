@@ -69,3 +69,24 @@ module.exports.updateRole = asyncHandler(async function (req, res, next) {
     }
     return res.status(422).send({ statusCode: 1, message: "not permission" })
 });
+
+/**
+ * controller delete user
+ * @param {*} req 
+ * @param {*} res 
+ */
+ module.exports.deleteAccount = asyncHandler(async function (req, res, next) {
+    let currentUser = jwtHelper.decodeToken(req.headers["authorization"], process.env.SECRET_KEY);
+    if (!currentUser) {
+        return res.status(401).send({ message: 'Invalid Token' });
+    }
+    if (currentUser.role == 2 || currentUser.role == 3) {
+            const id = req.query.id || req.params.id;
+            const result = await Account.deleteAccount(id);
+            if (!result) {
+                return res.status(400).send({ statusCode: 1, message: 'delete failed' });
+            }
+            return res.status(200).send({statusCode:0, message: "delete success"});
+    }
+    return res.status(422).send({ statusCode: 1, message: "not permission" })
+});

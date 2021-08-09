@@ -2,10 +2,8 @@ const knex = require('../util/knex');
 const _ = require('lodash');
 
 async function getDetails(params) {
-    const data = await knex('bills').where({ acc_id: params.accId, id: params.billId});
-    const result = await knex('bill_details')
-        .where({ id:data[0].id})
-    return result;
+    const data = await knex('bill_details').where({ bill_id:params.billId});
+    return data;
 }
 
 async function getList(params) {

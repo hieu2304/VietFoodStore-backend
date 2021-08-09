@@ -6,5 +6,6 @@ const router = express.Router();
 router.get('/list',authMiddleware.isAuth,controller.getAll);
 router.get('/details/:id?',authMiddleware.isAuth,controller.getAccount);
 router.post('/update-role',authMiddleware.isAuth,controller.updateRole);
+router.delete('/delete/:id?',authMiddleware.isAuth,controller.deleteAccount);
 
 module.exports = router;

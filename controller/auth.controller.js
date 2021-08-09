@@ -19,8 +19,8 @@ module.exports.login = async (req, res) => {
             })
         } else {
             const result = await Account.login(value.email, value.passWord);
-            const accessToken = jwtHelper.generateToken(result,  process.env.SECRET_KEY, '1h');
-            const refreshToken = jwtHelper.generateToken(result,  process.env.REFRESH_KEY, '30D');
+            const accessToken = jwtHelper.generateToken(result, process.env.SECRET_KEY, '1h');
+            const refreshToken = jwtHelper.generateToken(result, process.env.REFRESH_KEY, '30D');
             await Account.addRefreshToken(value.email, refreshToken);
             return res.status(200).json({ accessToken, refreshToken });
         }
