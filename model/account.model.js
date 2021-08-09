@@ -13,7 +13,7 @@ async function getAccount(params) {
 }
 
 async function updateRole(params) {
-    const data = await knex('accounts').update('role_id',params.accRole).where('id',id);
+    const data = await knex('accounts').update('role_id',params.accRole).where('id',params.accId);
     return data;
 }
 
