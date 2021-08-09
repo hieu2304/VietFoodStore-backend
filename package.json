@@ -23,6 +23,7 @@
     "nodemailer": "^6.6.3",
     "pg": "^8.7.1",
     "postgresql": "0.0.1",
+    "readable-stream": "^3.6.0",
     "sequelize": "^6.6.5",
     "streamifier": "^0.1.1"
   },
