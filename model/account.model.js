@@ -1,5 +1,6 @@
 const knex = require('../util/knex');
 const _ = require('lodash');
+const bcrypt = require('bcrypt');
 
 async function getAll(staff) {
     const data = await knex('accounts');
@@ -22,9 +23,19 @@ async function deleteAccount(params) {
     return data;
 }
 
+async function updatePassword(password,id){
+    let account = {
+        password: bcrypt.hashSync(password, 10),
+        update_date:new Date()
+    }
+    const data = await knex('accounts').update(account).where('id',id);
+    return data;
+}
+
 module.exports = {
     getAll,
     getAccount,
     updateRole,
-    deleteAccount
+    deleteAccount,
+    updatePassword
 };

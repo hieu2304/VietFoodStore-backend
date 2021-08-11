@@ -44,7 +44,8 @@ async function register(params,code) {
     temp.password = hashPassword(params.passWord);
     temp.username = params.email;
     temp.activeCode = code;
-    const fields = ['username', 'password', 'email', 'phoneNumber', 'fullName','activeCode'];
+    temp.create_date = new Date();
+    const fields = ['username', 'password', 'email', 'phoneNumber', 'fullName','activeCode','create_date'];
     const data = _.pick(temp, fields);
     await knex('accounts').insert(data);
 }
@@ -66,9 +67,20 @@ async function updateForgotCode(code,params) {
     return result;
 }
 
+async function findById(params){
+    const result = await knex('accounts').where('id', params);
+    return result;
+}
+
+async function newPassword(params,id){
+    let password = hashPassword(params);
+    const result = await knex('accounts').update('password',password).where('id',id);
+    return result;
+}
 
 module.exports = {
     login,
+    findById,
     register,
     findUserByKey,
     addRefreshToken,
@@ -76,4 +88,5 @@ module.exports = {
     verifyCode,
     forgotPassword,
     updateForgotCode,
+    newPassword
 };

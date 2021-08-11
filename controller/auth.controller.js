@@ -130,3 +130,35 @@ module.exports.forgotPassword = async (req, res) => {
         res.send({ code: error.code, message: error.message || undefined });
     }
 };
+
+/**
+* controller new password
+* @param {*} req 
+* @param {*} res 
+*/
+module.exports.newPassword = async (req, res) => {
+    try {
+        const { accId, accPassword, tokenChangePass } = req.body
+        let dateOb = new Date()
+        const account = await Account.findById(accId);
+        if (account.length === 0) {
+            return res.status(400).json({
+                errorMessage: 'account not exists',
+                statusCode: 1
+            })
+        }
+        if (account[0].forgotCode !== tokenChangePass) {
+            return res.status(400).json({
+                errorMessage: 'wrong code ',
+                statusCode: 1
+            })
+        }
+        await Account.newPassword(accPassword,accId);
+        return res.status(200).json({
+            statusCode: 0,
+            message: "Change password success"
+        })
+    } catch (error) {
+        res.send({ code: error.code, message: error.message || undefined });
+    }
+};
