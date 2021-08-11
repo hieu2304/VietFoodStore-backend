@@ -8,5 +8,6 @@ router.use('/authentication',require('./router/auth.router'));
 router.use('/stocks',require('./router/stock.router'));
 router.use('/categories',require('./router/category.router'));
 router.use('/bill',require('./router/bill.router'));
+router.use('/comments',require('./router/comment.router'));
 
 module.exports = router;
