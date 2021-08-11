@@ -1,5 +1,3 @@
-const authConfigs = require('../config/index');
-const authConfig = authConfigs[authConfigs.environment].auth;
 const jwtHelper = require("../lib/jwt");
 const Account = require("../model/auth.model");
 const validate = require("../lib/validate");

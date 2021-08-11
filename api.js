@@ -9,5 +9,6 @@ router.use('/stocks',require('./router/stock.router'));
 router.use('/categories',require('./router/category.router'));
 router.use('/bills',require('./router/bill.router'));
 router.use('/products',require('./router/product.router'))
+router.use('/comments',require('./router/comment.router'));
 
 module.exports = router;
