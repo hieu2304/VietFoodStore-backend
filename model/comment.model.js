@@ -16,7 +16,12 @@ async function getList(params) {
     return result;
 }
 
+async function add(comment) {
+    return knex('comments').insert(comment);
+}
+
 module.exports = {
     getCommentByProductId,
-    getList
+    getList,
+    add
 };

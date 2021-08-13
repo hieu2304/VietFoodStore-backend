@@ -13,7 +13,9 @@ module.exports.getById = asyncHandler(async function (req, res, next) {
     if(result === null) {
         return res.status(204).end();
     }
-    return res.status(200).send(result);
+    return res.status(200).json({
+        statusCode: 0
+    });
 });
 
 
