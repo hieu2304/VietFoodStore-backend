@@ -15,8 +15,9 @@ async function login(username, password) {
         return null;
     }
     const result = {
-        id: authUser[0].id,
-        role: authUser[0].role_id
+        accId: authUser[0].id,
+        role: 'ADM',
+        accStatus:authUser[0].status
     }
     return result;
 }
@@ -26,7 +27,7 @@ async function verifyCode(params) {
     if (result.length <= 0) {
         return null;
     }
-    await knex('accounts').update('status',1).where('id', params.accId);
+    await knex('accounts').update('status',0).where('id', params.accId);
     return result;
 }
 
@@ -47,7 +48,8 @@ async function register(params,code) {
     temp.create_date = new Date();
     const fields = ['username', 'password', 'email', 'phoneNumber', 'fullName','activeCode','create_date'];
     const data = _.pick(temp, fields);
-    await knex('accounts').insert(data);
+    const result = await knex('accounts').returning('id').insert(data);
+    return result;
 }
 
 async function forgotPassword(params) {
