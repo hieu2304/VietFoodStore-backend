@@ -1,5 +1,6 @@
 const Category = require('../model/category.model');
 const asyncHandler = require('express-async-handler');
+const validate = require("../lib/validate");
 
 module.exports.getAll = asyncHandler(async function (req, res, next) {
     let result = await Category.getAll();
@@ -44,6 +45,7 @@ module.exports.getById = asyncHandler(async function (req, res, next) {
         return res.status(204).end();
     }
     return res.status(200).json({
+        listCategory: result,
         statusCode: 0
     });
 });
@@ -55,6 +57,61 @@ module.exports.add = asyncHandler(async function (req, res, next) {
     const result = await Category.add(category);
     category.id = result[0];
     res.json(category);
+});
+
+module.exports.addFatherCategory = asyncHandler(async function (req, res, next) {
+//     category_name: 'category_new',
+//     sub_category: [{id: 2, name: 'category_sub1'}, {id: 3, name: 'category_sub2'}]
+    try {
+        const { error, value } = validate.checkCategoryAddFather(req.body);
+        if (error) {
+            res.status(422).json({
+                message: 'Invalid request',
+                data: req.body,
+                statusCode: 1
+            })
+        } else {
+            const fatherCategoryName = req.body.category_name;
+            const fatherCategory = {
+                name: fatherCategoryName,
+                father_id: 0,
+                create_date: new Date()
+            }
+
+            const result = await Category.add(fatherCategory);
+
+            //get id father category
+            const resultFatherCategory = await Category.findByName(fatherCategoryName);
+            if(resultFatherCategory === null) {
+                return res.status(204).json({
+                    message: 'No get category',
+                    statusCode: 1
+                });
+            }
+            fatherCategoryId = resultFatherCategory.id;
+
+            //update fatherid in sub_category
+            const listSubCategory = req.body.sub_category;
+
+            listSubCategory.forEach(async(element)  => {
+                let sub_cate = {
+                    father_id: fatherCategoryId,
+                    update_date: new Date()
+                }
+                await Category.update(element.id, sub_cate);
+            });
+        }
+    } catch (error) {
+        return res.status(404).json({
+            message: error,
+            statusCode: 1
+        })
+    }
+    res.json({
+        message: 'Category create success',
+        statusCode: 0,
+        fatherCategoryId
+    })
 });
 
 module.exports.delete = asyncHandler(async function (req, res, next) {

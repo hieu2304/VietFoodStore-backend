@@ -26,6 +26,14 @@ async function findById(id) {
     return data[0];
 }
 
+async function findByName(name) {
+    const data = await knex('categories').where('name', name);
+    if(data.length === 0) {
+        return null;
+    }
+    return data[0];
+}
+
 async function add(category) {
     return knex('categories').insert(category);
 }
@@ -45,5 +53,6 @@ module.exports = {
     deleteById,
     update,
     getAllFatherCategory,
-    getAllSubCategory
+    getAllSubCategory,
+    findByName
 };
