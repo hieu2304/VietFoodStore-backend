@@ -153,11 +153,16 @@ module.exports.delete = asyncHandler(async function (req, res, next) {
 
 module.exports.update = asyncHandler(async function (req, res, next) {
     const category = req.body;
+    category.update_date = new Date();
     const category_id = req.body.id
     delete category.id;
     const affective_rows = await Category.update(category_id, category);
     if(affective_rows === 0) {
         return res.status(304).end();
     }
-    res.json(category);
+    res.json({
+        statusCode: 0,
+        message: 'Update category success',
+        category
+    });
 });
