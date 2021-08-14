@@ -38,6 +38,31 @@ module.exports.getAllSubCategory = asyncHandler(async function (req, res, next) 
     });
 });
 
+module.exports.getAllFatherSubCategory = asyncHandler(async function (req, res, next) {
+    let result = await Category.getAllFatherCategory();
+    if (!result) return res.status(400).send({ 
+        message: 'Get categories failed' ,
+        statusCode: 1
+    });
+    const listCategory = [];
+
+    for(var i= 0; i< result.length; i++) {
+        const listSubCategory = await Category.getListSubCategoryByFatherId(result[i].id);
+        listCategory.push({
+            id: result[i].id,
+            name: result[i].name,
+            father_id: result[i].father_id,
+            listSub: listSubCategory
+        })
+    }
+
+    return res.status(200).send({
+        listCategory: listCategory,
+        statusCode: 0
+    });
+});
+
+
 module.exports.getById = asyncHandler(async function (req, res, next) {
     let categoryId = + req.params.id || 0;
     let result = await Category.findById(categoryId);
@@ -77,7 +102,6 @@ module.exports.addFatherCategory = asyncHandler(async function (req, res, next) 
                 father_id: 0,
                 create_date: new Date()
             }
-
             const result = await Category.add(fatherCategory);
 
             //get id father category

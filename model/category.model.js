@@ -13,8 +13,13 @@ async function getAllSubCategory() {
     return data;
 }
 
+async function getListSubCategoryByFatherId(fatherId) {
+    const data = await knex('categories').where('father_id', fatherId);
+    return data;
+}
+
 async function getAllFatherCategory() {
-    const data = await knex('categories').where('father_id', 0).orWhere('father_id', null);
+    const data = await knex('categories').where('father_id', 0).orWhere('father_id', null).orderBy('id');
     return data;
 }
 
@@ -54,5 +59,6 @@ module.exports = {
     update,
     getAllFatherCategory,
     getAllSubCategory,
-    findByName
+    findByName,
+    getListSubCategoryByFatherId
 };
