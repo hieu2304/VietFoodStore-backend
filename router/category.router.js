@@ -3,9 +3,11 @@ const controller = require('../controller/category.controller');
 const authMiddleware = require("../middleware/auth")
 const router = express.Router();
 
-router.get('/', authMiddleware.isAuth, controller.getAll);
+router.get('/', controller.getAll);
+router.get('/fatherCategory', controller.getAllFatherCategory);
+router.get('/subCategory', controller.getAllSubCategory);
 router.get('/:id', authMiddleware.isAuth, controller.getById);
-router.post('/', authMiddleware.isAuth, controller.add);
+router.post('/', controller.add);
 router.get('/delete/:id', authMiddleware.isAuth, controller.delete);
 router.post('/update', authMiddleware.isAuth, controller.update);
 module.exports = router;

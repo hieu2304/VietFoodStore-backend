@@ -3,8 +3,38 @@ const asyncHandler = require('express-async-handler');
 
 module.exports.getAll = asyncHandler(async function (req, res, next) {
     let result = await Category.getAll();
-    if (!result) return res.status(400).send({ message: 'Get categories failed' });
-    return res.status(200).send(result);
+    if (!result) return res.status(400).send({ 
+        message: 'Get categories failed' ,
+        statusCode: 1
+    });
+    return res.status(200).send({
+        listCategory: result,
+        statusCode: 0
+    });
+});
+
+module.exports.getAllFatherCategory = asyncHandler(async function (req, res, next) {
+    let result = await Category.getAllFatherCategory();
+    if (!result) return res.status(400).send({ 
+        message: 'Get categories failed' ,
+        statusCode: 1
+    });
+    return res.status(200).send({
+        listCategory: result,
+        statusCode: 0
+    });
+});
+
+module.exports.getAllSubCategory = asyncHandler(async function (req, res, next) {
+    let result = await Category.getAllSubCategory();
+    if (!result) return res.status(400).send({ 
+        message: 'Get categories failed' ,
+        statusCode: 1
+    });
+    return res.status(200).send({
+        listCategory: result,
+        statusCode: 0
+    });
 });
 
 module.exports.getById = asyncHandler(async function (req, res, next) {
@@ -21,6 +51,7 @@ module.exports.getById = asyncHandler(async function (req, res, next) {
 
 module.exports.add = asyncHandler(async function (req, res, next) {
     const category = req.body;
+    category.create_date = new Date();
     const result = await Category.add(category);
     category.id = result[0];
     res.json(category);

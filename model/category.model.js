@@ -6,6 +6,18 @@ async function getAll() {
     return data;
 }
 
+async function getAllSubCategory() {
+    const data = await knex('categories').whereNot({
+        father_id: 0
+    });
+    return data;
+}
+
+async function getAllFatherCategory() {
+    const data = await knex('categories').where('father_id', 0).orWhere('father_id', null);
+    return data;
+}
+
 async function findById(id) {
     const data = await knex('categories').where('id', id);
     if(data.length === 0) {
@@ -31,5 +43,7 @@ module.exports = {
     findById,
     add,
     deleteById,
-    update
+    update,
+    getAllFatherCategory,
+    getAllSubCategory
 };
