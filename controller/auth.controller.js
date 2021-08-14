@@ -74,8 +74,9 @@ module.exports.refreshToken = async (req, res) => {
     if (refreshTokenFromClient && result.length > 0) {
         try {
             const dataUser = {
-                id: result[0].id,
-                role_id: result[0].role_id
+                accId: result[0].id,
+                role: result[0].role_id,
+		status:0
             }
             const accessToken = jwtHelper.generateToken(dataUser, process.env.SECRET_KEY, '1h');
             return res.status(200).json({ accessToken });

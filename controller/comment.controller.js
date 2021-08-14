@@ -1,17 +1,17 @@
 const Comment = require('../model/comment.model');
 const asyncHandler = require('express-async-handler');
 const validate = require("../lib/validate");
-const jwt = require('jsonwebtoken');
+const jwtHelper = require('../lib/jwt');
 
 /**
- * controller get List Bill for Account
+ * controller get List comment for Product
  * @param {*} req 
  * @param {*} res 
  */
 module.exports.getListCommentByProductId = asyncHandler(async function (req, res, next) {
     const productId = req.query.productId || req.params.productId || 0;
     const result = await Comment.getCommentByProductId(productId)
-    if(result === null) {
+    if (result === null) {
         return res.status(204).json({
             listComment: [],
             statusCode: 1
@@ -26,12 +26,12 @@ module.exports.getListCommentByProductId = asyncHandler(async function (req, res
 
 module.exports.addComment = asyncHandler(async function (req, res, next) {
     try {
-        //get info token to get accId
-        const tokenFromClient = req.body.token || req.query.token || req.headers["authorization"];
-        const {accId} = await jwt.verify(tokenFromClient, process.env.SECRET_KEY);
+        let currentUser = jwtHelper.decodeToken(req.headers["authorization"], process.env.SECRET_KEY);
+        if (!currentUser) {
+            return res.status(401).send({ message: 'Invalid Token' });
+        }
         const comment = req.body;
         comment.acc_id = accId;
-        //validate comment
         const { error, value } = validate.checkAddComment(comment);
 
         if (error) {
@@ -41,10 +41,9 @@ module.exports.addComment = asyncHandler(async function (req, res, next) {
                 statusCode: 1
             })
         } else {
-            const result = await Comment.add(comment);
-            comment.id = result[0];
+           await Comment.add(value);
             res.json({
-                listComment: [comment],
+                message: 'Comment success',
                 statusCode: 0
             });
         }
