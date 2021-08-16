@@ -62,6 +62,15 @@ module.exports.getAllFatherSubCategory = asyncHandler(async function (req, res, 
     });
 });
 
+module.exports.getSubCategoryByFatherId = asyncHandler(async function (req, res, next) {
+    const fatherId = + req.params.id || 0;
+    const listSubCategory = await Category.getListSubCategoryByFatherId(fatherId);
+    return res.status(200).send({
+        listCategory: listSubCategory,
+        statusCode: 0
+    });
+});
+
 
 module.exports.getById = asyncHandler(async function (req, res, next) {
     let categoryId = + req.params.id || 0;
