@@ -10,7 +10,10 @@ router.get('/SubCategory/:id', controller.getSubCategoryByFatherId);
 router.get('/subCategory', controller.getAllSubCategory);
 router.get('/:id', authMiddleware.isAuth, controller.getById);
 router.post('/', controller.add);
-router.post('/addFatherCategory', controller.addFatherCategory);
+router.post('/addFather', controller.addFatherCategory);
+router.post('/addSubCategory', controller.addSubCategoryByFatherId);
+router.post('/addFatherSubCategory', controller.addFatherSubCategory);
 router.get('/delete/:id', authMiddleware.isAuth, controller.delete);
-router.post('/update', authMiddleware.isAuth, controller.update);
+router.post('/update', authMiddleware.isAuth, controller.update); //update basic
+router.post('/updateCategory', controller.updateFatherSubCategory);
 module.exports = router;
