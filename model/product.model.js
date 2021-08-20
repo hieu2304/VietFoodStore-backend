@@ -8,11 +8,26 @@ async function getAll() {
 }
 
 async function getTopMonth() {
-    const data = await knex('products');
+    const data = await knex('products')
+        .join('product_images', 'products.id', '=', 'product_images.prod_id')
+        .join('comments', 'products.id', '=', 'comments.prod_id')
+        .orderBy('comments.vote', 'desc')
+        .limit(10);
     return data;
 }
 
+async function getSuggestion() {
+    const data = await knex('products')
+        .join('product_images', 'products.id', '=', 'product_images.prod_id')
+        .join('comments', 'products.id', '=', 'comments.prod_id')
+        .orderBy('comments.vote', 'desc')
+        .limit(10);
+    return data;
+}
+
+
 module.exports = {
     getAll,
-    getTopMonth
+    getTopMonth,
+    getSuggestion
 };
