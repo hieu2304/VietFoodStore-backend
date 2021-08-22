@@ -14,6 +14,7 @@ module.exports.getAll = asyncHandler(async function (req, res, next) {
     });
 });
 
+//list father
 module.exports.getAllFatherCategory = asyncHandler(async function (req, res, next) {
     let result = await Category.getAllFatherCategory();
     if (!result) return res.status(400).send({ 
@@ -33,11 +34,12 @@ module.exports.getAllSubCategory = asyncHandler(async function (req, res, next) 
         statusCode: 1
     });
     return res.status(200).send({
-        listCategory: result,
+        subCategories: result,
         statusCode: 0
     });
 });
 
+//list
 module.exports.getAllFatherSubCategory = asyncHandler(async function (req, res, next) {
     let result = await Category.getAllFatherCategory();
     if (!result) return res.status(400).send({ 
@@ -52,21 +54,22 @@ module.exports.getAllFatherSubCategory = asyncHandler(async function (req, res, 
             id: result[i].id,
             name: result[i].name,
             father_id: result[i].father_id,
-            listSub: listSubCategory
+            subCategories: listSubCategory
         })
     }
 
     return res.status(200).send({
-        listCategory: listCategory,
+        subCategories: listCategory,
         statusCode: 0
     });
 });
 
+//list child
 module.exports.getSubCategoryByFatherId = asyncHandler(async function (req, res, next) {
     const fatherId = + req.params.id || 0;
     const listSubCategory = await Category.getListSubCategoryByFatherId(fatherId);
     return res.status(200).send({
-        listCategory: listSubCategory,
+        subCategories: listSubCategory,
         statusCode: 0
     });
 });
@@ -83,6 +86,7 @@ module.exports.getById = asyncHandler(async function (req, res, next) {
         statusCode: 0
     });
 });
+
 
 
 module.exports.add = asyncHandler(async function (req, res, next) {
