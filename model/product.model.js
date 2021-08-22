@@ -7,28 +7,40 @@ async function getAll() {
     return data;
 }
 
-async function getNumberSuggestion(catID) {
-    var numberPage = await knex.raw(`select count(distinct products.id) 
-	from products join comments on products.id = comments.prod_id
-	where products.cate_id = ${catID}`);
-    return numberPage;
+async function getTopMonth() {
+    const data = await knex.raw(`
+        select d.id, d.name, d.cate_id, d.price, e."data", d.amount, d.avg_vote 
+        from (
+            select a.id,  a."name", a.cate_id, a.price, a.amount, avg(b.vote) avg_vote
+            from products a, COMMENTS b
+            where a.id= b.prod_id
+            AND EXTRACT(MONTH FROM b.create_date) = EXTRACT(MONTH FROM CURRENT_TIMESTAMP)
+            group by a.id,  a."name", a.cate_id, a.price, a.amount) d, 
+            product_images e
+        where d.id= e.prod_id
+        order by d.avg_vote DESC
+        limit(10)` );
+    return data;
 }
-async function getSuggestion(limit,offset,catID){  
-	var result = await knex.raw(`with products as(
-		select products.*, round(avg(comments.vote),2) as avgStar
-		from products join comments on products.id = comments.prod_id
-		where products.cate_id = ${catID}
-		group by products.id
-		offset ${offset}
-		limit ${limit}
-	)
-	select pr.*,img.data from products pr left join product_images img
-	on img.prod_id = pr.id order by avgStar desc`)
-    return result;
+
+async function getSuggestion() {
+    const data = await knex.raw(`
+    select d.id, d.name, d.cate_id, d.price, e."data", d.amount, d.avg_vote 
+    from (
+        select a.id,  a."name", a.cate_id, a.price, a.amount, avg(b.vote) avg_vote
+        from products a, COMMENTS b
+        where a.id= b.prod_id
+        group by a.id,  a."name", a.cate_id, a.price, a.amount) d, 
+        product_images e
+    where d.id= e.prod_id
+    order by d.avg_vote DESC
+    limit(10)`);
+    return data;
 }
+
 
 module.exports = {
     getAll,
-    getNumberSuggestion,
+    getTopMonth,
     getSuggestion
 };

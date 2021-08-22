@@ -31,6 +31,17 @@ async function findById(id) {
     return data[0];
 }
 
+async function findByFatherId(id) {
+    const data = await knex('categories').where({
+        'id': id,
+        'father_id': 0
+    });
+    if(data.length === 0) {
+        return null;
+    }
+    return data[0];
+}
+
 async function findByName(name) {
     const data = await knex('categories').where('name', name);
     if(data.length === 0) {
@@ -54,6 +65,7 @@ async function update(id, categoryWithoutId) {
 module.exports = {
     getAll,
     findById,
+    findByFatherId,
     add,
     deleteById,
     update,

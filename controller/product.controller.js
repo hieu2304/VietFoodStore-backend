@@ -10,7 +10,8 @@ const asyncHandler = require('express-async-handler');
 module.exports.getAll = asyncHandler(async function (req, res, next) {
     let result = await Product.getAll();
     var prodList = []
-    var index = 0
+    var index = 0;
+
     while (index < result.length) {
         let prodObj = {
             prod_id: result[index].id,
@@ -54,73 +55,109 @@ module.exports.getAll = asyncHandler(async function (req, res, next) {
  */
 
 module.exports.getTopMonth = asyncHandler(async function (req, res, next) {
-    const { limit, page, catID } = req.query|| req.params 
-	const offset = limit * (page - 1)
+    let result = await Product.getTopMonth();
+    
+    var listProduct = [];
+    if(result.rows.length > 0) {
+        for(var i= 0; i< result.rows.length; i++) {
+            const id_cate = result.rows[i].id;
+            const images = [];
+            images.push(result.rows[i].data);
+            for(var j= i+ 1; j< result.rows.length; j++) {
+                if(id_cate === result.rows[j].id) {
+                    images.push(result.rows[j].data);
+                }
+            }
+            //check exist in listProduct
+            var existCategory= false;
+            if(listProduct) {
+                listProduct.forEach(element => {
+                    if(id_cate === element.prod_id) {
+                        existCategory = true;
+                    }
+                });
+            }
 
+            if(!existCategory) {
+                listProduct.push({
+                    prod_id: id_cate,
+                    prod_name: result.rows[i].name,
+                    prod_category_id: result.rows[i].cate_id,
+                    prod_amount: result.rows[i].amount,
+                    prod_created_date: result.rows[i].created_date,
+                    prod_updated_date: result.rows[i].updated_date,
+                    prod_price: result.rows[i].price,
+                    image: images
+                })
+                
+            }
+        }
+    }
 
-	if (page < 1 || limit < 1 || limit > 10) {
-		return res.status(400).json({
-			errorMessage: "limit and page parameter is not valid",
-			statusCode: errorCode
-		})
-	}
+    if (result) {
+        return res.status(200).json({
+            listProduct: listProduct,
+            statusCode: 0
+        })
+    }
+    else {
+        return res.status(500).json({
+            listProduct: [],
+            statusCode: 1
+        })
+    }
+});
 
-    var numberPage = await Product.getNumberSuggestion(catID);
+module.exports.getSuggestion = asyncHandler(async function (req, res, next) {
+    let result = await Product.getSuggestion();
+    
+    var listProduct = [];
+    if(result.rows.length > 0) {
+        for(var i= 0; i< result.rows.length; i++) {
+            const id_cate = result.rows[i].id;
+            const images = [];
+            images.push(result.rows[i].data);
+            for(var j= i+ 1; j< result.rows.length; j++) {
+                if(id_cate === result.rows[j].id) {
+                    images.push(result.rows[j].data);
+                }
+            }
+            //check exist in listProduct
+            var existCategory= false;
+            if(listProduct) {
+                listProduct.forEach(element => {
+                    if(id_cate === element.prod_id) {
+                        existCategory = true;
+                    }
+                });
+            }
 
-	numberPage = Number(numberPage.rows[0].count)
-	if (numberPage > limit) {
-		numberPage = Math.ceil(numberPage / limit)
-	}
-	else {
-		numberPage = 1
-	}
+            if(!existCategory) {
+                listProduct.push({
+                    prod_id: id_cate,
+                    prod_name: result.rows[i].name,
+                    prod_category_id: result.rows[i].cate_id,
+                    prod_amount: result.rows[i].amount,
+                    prod_created_date: result.rows[i].created_date,
+                    prod_updated_date: result.rows[i].updated_date,
+                    prod_price: result.rows[i].price,
+                    image: images
+                })
+                
+            }
+        }
+    }
 
-    var result = Product.getSuggestion(limit,offset,catID);
-
-	result = result.rows
-
-
-	//process return list
-	var prodList = []
-
-	var index = 0
-	while (index < result.length) {
-		let prodObj = {
-			prod_id: result[index].prod_id,
-			prod_name: result[index].prod_name,
-			prod_category_id: result[index].prod_category_id,
-			prod_amount: result[index].prod_amount,
-			prod_description: result[index].prod_description,
-			prod_created_date: result[index].prod_created_date,
-			prod_updated_date: result[index].prod_updated_date,
-			prod_price: result[index].prod_price,
-			avgStar: result[index].avgstar
-		}
-		let imageLink = result[index].prod_img_data
-		if (index === 0) {
-			prodObj['images'] = imageLink
-			prodList.push(prodObj)
-		}
-		if (result[index].prod_id !== prodList[prodList.length - 1].prod_id) {
-			prodObj['images'] = imageLink
-			prodList.push(prodObj)
-		}
-		index += 1
-	}
-
-
-	if (result) {
-		return res.status(200).json({
-			numberOfPage: numberPage,
-			listProduct: prodList,
-			statusCode: successCode
-		})
-	}
-	else {
-		return res.status(200).json({
-			listProduct: [],
-			statusCode: errorCode
-		})
-	}
-
+    if (result) {
+        return res.status(200).json({
+            listProduct: listProduct,
+            statusCode: 0
+        })
+    }
+    else {
+        return res.status(500).json({
+            listProduct: [],
+            statusCode: 1
+        })
+    }
 });
