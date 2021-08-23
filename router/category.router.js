@@ -4,7 +4,7 @@ const authMiddleware = require("../middleware/auth")
 const router = express.Router();
 
 router.get('/', controller.getAll);
-router.get('/fatherSubCategory', controller.getAllFatherSubCategory);
+router.get('/list', controller.getAllFatherSubCategory);///this
 router.get('/fatherCategory', controller.getAllFatherCategory);
 router.get('/SubCategory/:id', controller.getSubCategoryByFatherId);
 router.get('/subCategory', controller.getAllSubCategory);

@@ -57,10 +57,29 @@ module.exports.getAllFatherSubCategory = asyncHandler(async function (req, res, 
             subCategories: listSubCategory
         })
     }
+    let { page, limit } = req.query;
+    let paginationResult = [];
+    if (page || limit) {
+        let startIndex = (parseInt(page) - 1) * parseInt(limit)
+        let endIndex = (parseInt(page) * parseInt(limit))
+        let totalPage = Math.floor(listCategory.length / parseInt(limit))
 
+        if (listCategory.length % parseInt(limit) !== 0) {
+            totalPage = totalPage + 1
+        }
+
+        paginationResult = listCategory.slice(startIndex, endIndex);
+        return res.status(200).send({
+            totalPage,
+            paginationResult,
+            statusCode: 0
+        });
+    }
     return res.status(200).send({
-        subCategories: listCategory,
+        totalPage: listCategory.length,
+        paginationResult: listCategory,
         statusCode: 0
+
     });
 });
 
