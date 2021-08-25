@@ -85,11 +85,36 @@ module.exports.getAllFatherSubCategory = asyncHandler(async function (req, res, 
 
 //list child
 module.exports.getSubCategoryByFatherId = asyncHandler(async function (req, res, next) {
-    const fatherId = + req.params.id || 0;
+    const fatherId = + req.body.cateFather || 0;
     const listSubCategory = await Category.getListSubCategoryByFatherId(fatherId);
+    // return res.status(200).send({
+    //     subCategories: listSubCategory,
+    //     statusCode: 0
+    // });
+
+    let { page, limit } = req.query;
+    let paginationResult = [];
+    if (page || limit) {
+        let startIndex = (parseInt(page) - 1) * parseInt(limit)
+        let endIndex = (parseInt(page) * parseInt(limit))
+        let totalPage = Math.floor(listSubCategory.length / parseInt(limit))
+
+        if (listSubCategory.length % parseInt(limit) !== 0) {
+            totalPage = totalPage + 1
+        }
+
+        paginationResult = listSubCategory.slice(startIndex, endIndex);
+        return res.status(200).send({
+            totalPage,
+            paginationResult,
+            statusCode: 0
+        });
+    }
     return res.status(200).send({
-        subCategories: listSubCategory,
+        totalPage: listSubCategory.length,
+        paginationResult: listSubCategory,
         statusCode: 0
+
     });
 });
 
@@ -170,8 +195,8 @@ module.exports.addFatherSubCategory = asyncHandler(async function (req, res, nex
 });
 
 module.exports.addFatherCategory = asyncHandler(async function (req, res, next) {
-    //POST:{name: 'father_category_name'}     
-    const fatherCategoryName = req.body.name;
+    //POST:{cateName: 'father_category_name'}     
+    const fatherCategoryName = req.body.cateName;
     const existFather = await Category.findByName(fatherCategoryName);
     //check exist father name. if no exist -> save
     if (existFather === null) {
@@ -195,8 +220,8 @@ module.exports.addFatherCategory = asyncHandler(async function (req, res, next) 
 });
 
 module.exports.addSubCategoryByFatherId = asyncHandler(async function (req, res, next) {
-    //     father_id: '1',
-    //     name: 'category_sub1'
+    //     father_id: '1',   cateFather
+    //     name: 'category_sub1'  cateName
     try {
         const { error, value } = validate.checkCategoryAddSubByFatherId(req.body);
         if (error) {
@@ -207,8 +232,8 @@ module.exports.addSubCategoryByFatherId = asyncHandler(async function (req, res,
             })
         } else {
             //get id father category
-            const fatherId = req.body.father_id;
-            const subNameCategory = req.body.name;
+            const fatherId = req.body.cateFather;
+            const subNameCategory = req.body.cateName;
             const existFatherId = await Category.findByFatherId(fatherId);
             if (existFatherId === null) {
                 return res.status(404).json({
@@ -238,7 +263,7 @@ module.exports.addSubCategoryByFatherId = asyncHandler(async function (req, res,
 });
 
 module.exports.delete = asyncHandler(async function (req, res, next) {
-    let categoryId = + req.params.id || 0;
+    let categoryId = + req.body.cateId || 0;
     let affectiveRow = await Category.deleteById(categoryId);
     if (affectiveRow === 0) {
         return res.json({
@@ -252,7 +277,7 @@ module.exports.delete = asyncHandler(async function (req, res, next) {
 
 module.exports.updateFatherSubCategory = asyncHandler(async function (req, res, next) {
     // {
-    //     cateID: '',
+    //     cateId: '',
     //     cateName: '',
     //     cateFather; '' if TH cateFather(father_id) have-> update child by fatherId
     // }
@@ -272,7 +297,7 @@ module.exports.updateFatherSubCategory = asyncHandler(async function (req, res, 
                     name: req.body.cateName,
                     update_date: new Date()
                 };
-                const category_id = req.body.cateID
+                const category_id = req.body.cateId
                 const affective_rows = await Category.update(category_id, category);
                 if (affective_rows === 0) {
                     return res.status(304).end();
@@ -285,7 +310,7 @@ module.exports.updateFatherSubCategory = asyncHandler(async function (req, res, 
                     update_date: new Date(),
                     father_id: req.body.cateFather
                 };
-                const category_id = req.body.cateID
+                const category_id = req.body.cateId
                 const affective_rows = await Category.update(category_id, category);
                 if (affective_rows === 0) {
                     return res.status(304).end();
