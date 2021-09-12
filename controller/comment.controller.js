@@ -9,19 +9,70 @@ const jwtHelper = require('../lib/jwt');
  * @param {*} res 
  */
 module.exports.getListCommentByProductId = asyncHandler(async function (req, res, next) {
-    const productId = req.query.productId || req.params.productId || 0;
-    const result = await Comment.getCommentByProductId(productId)
-    if (result === null) {
-        return res.status(204).json({
-            listComment: [],
-            statusCode: 1
+    const productId = req.body.productID || 0;
+    
+    //get comments
+    const result = await Comment.getCommentByProductId(productId);
+
+    //get info review
+    var numberOfUserComment = null;
+    const resultNumberOfUserComment = await Comment.getNumberOfUserComment(productId);
+    if(resultNumberOfUserComment == undefined)
+        numberOfUserComment = null;
+    else 
+        numberOfUserComment = resultNumberOfUserComment.numberofusercomment;
+    const numberOfComment = result.length;
+    const avgStar = await Comment.getAvgStar(productId)
+
+    const numberOneStar = await Comment.countNumberStar(productId, 1);
+
+    const numberTwoStars = await Comment.countNumberStar(productId, 2);
+    const numberThreeStars = await Comment.countNumberStar(productId, 3);
+    const numberFourStars = await Comment.countNumberStar(productId, 4);
+    const numberFiveStars = await Comment.countNumberStar(productId, 5);
+
+    let { page, limit } = req.query;
+    let commentList = [];
+    
+
+    if (page || limit) {
+        let startIndex = (parseInt(page) - 1) * parseInt(limit)
+        let endIndex = (parseInt(page) * parseInt(limit))
+        let numberOfPage = Math.floor(result.length / parseInt(limit))
+
+        if (result.length % parseInt(limit) !== 0) {
+            numberOfPage = numberOfPage + 1
+        }
+
+        commentList = result.slice(startIndex, endIndex);
+        return res.status(200).send({
+            numberOfPage,
+            commentList,
+            statusCode: 0,
+            numberOfUserComment: numberOfUserComment,
+            numberOfComment,
+            avgStar: avgStar.round ,
+            numberOneStar: numberOneStar.count,
+            numberTwoStars: numberTwoStars.count,
+            numberThreeStars: numberThreeStars.count,
+            numberFourStars: numberFourStars.count,
+            numberFiveStars: numberFiveStars.count,
         });
     }
 
-    return res.status(200).json({
-        listComment: result,
-        statusCode: 0
-    })
+    return res.status(200).send({
+        numberOfPage: result.length,
+        commentList: result,
+        statusCode: 0,
+        numberOfUserComment: numberOfUserComment,
+        numberOfComment,
+        avgStar: avgStar.round ,
+        numberOneStar: numberOneStar.count,
+        numberTwoStars: numberTwoStars.count,
+        numberThreeStars: numberThreeStars.count,
+        numberFourStars: numberFourStars.count,
+        numberFiveStars: numberFiveStars.count,
+    });
 });
 
 module.exports.addComment = asyncHandler(async function (req, res, next) {
@@ -30,10 +81,15 @@ module.exports.addComment = asyncHandler(async function (req, res, next) {
         if (!currentUser) {
             return res.status(401).send({ message: 'Invalid Token' });
         }
-        const comment = req.body;
-        comment.acc_id = accId;
-        const { error, value } = validate.checkAddComment(comment);
+        const commentBody = req.body;
+        let comment = {
+            acc_id: currentUser.accId,
+            prod_id: commentBody.productID,
+            content: commentBody.content,
+            vote: commentBody.vote
+        }; 
 
+        var { error, value } = validate.checkAddComment(comment);
         if (error) {
             res.status(422).json({
                 message: 'Invalid request',
@@ -41,13 +97,20 @@ module.exports.addComment = asyncHandler(async function (req, res, next) {
                 statusCode: 1
             })
         } else {
-           await Comment.add(value);
+            await Comment.add(comment);
             res.json({
-                message: 'Comment success',
+                message: 'Create Comment success',
                 statusCode: 0
             });
         }
-    } catch (e) {
-        res.send({ code: error.code, message: error.message || undefined });
+    } catch (error) {
+        return res.status(404).json({
+            message: error,
+            statusCode: 1
+        })
     }
+    res.json({
+        message: 'Comment create success',
+        statusCode: 0
+    })
 });
