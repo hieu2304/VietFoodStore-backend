@@ -46,12 +46,21 @@ async function add(comment) {
     return knex('comments').insert(comment);
 }
 
+async function update(id, commentWithoutId) {
+    return knex('comments').where('id', id).update(commentWithoutId);
+}
+
+async function deleteComment(id) {
+    return knex('comments').where('id', id).update({'status': 0});
+}
+
 module.exports = {
     getCommentByProductId,
     getList,
     add,
     getNumberOfUserComment,
     getAvgStar,
-    countNumberStar
-    
+    countNumberStar,
+    update,
+    deleteComment
 };

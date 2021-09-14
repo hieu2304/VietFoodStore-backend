@@ -114,3 +114,82 @@ module.exports.addComment = asyncHandler(async function (req, res, next) {
         statusCode: 0
     })
 });
+
+module.exports.updateComment = asyncHandler(async function (req, res, next) {
+    // {
+    //     “commentID” : 12,
+    //     “content” : “Nội dung comment mới 6”,
+    //     “vote” : 5
+    // }
+    
+    try {
+        let currentUser = jwtHelper.decodeToken(req.headers["authorization"], process.env.SECRET_KEY);
+        if (!currentUser) {
+            return res.status(401).send({ message: 'Invalid Token' });
+        }
+        const commentBody = req.body;
+
+        let updComment = {
+            id: commentBody.commentID,
+            content: commentBody.content,
+            vote: commentBody.vote,
+            acc_id: currentUser.accId
+        }
+
+        var { error, value } = validate.checkUpdateComment(commentBody);
+        if (error) {
+            res.status(422).json({
+                message: 'Invalid request',
+                data: req.body,
+                statusCode: 1
+            })
+        } else {
+            let commentId = updComment.id;
+            delete updComment.id;
+
+            await Comment.update(commentId, updComment);
+            res.json({
+                message: 'Comment Update success',
+                statusCode: 0
+            });
+        }
+    } catch (error) {
+        return res.status(404).json({
+            message: error,
+            statusCode: 1
+        })
+    }
+    res.json({
+        message: 'Comment Update success',
+        statusCode: 0
+    })
+});
+
+module.exports.deleteComment = asyncHandler(async function (req, res, next) {
+    // {
+    //     “commentID” : 13
+    // }
+    
+    try {
+        let currentUser = jwtHelper.decodeToken(req.headers["authorization"], process.env.SECRET_KEY);
+        if (!currentUser) {
+            return res.status(401).send({ message: 'Invalid Token' });
+        }
+        const id = req.body.commentID || 0;
+
+        await Comment.deleteComment(id);
+        res.json({
+            message: 'Comment delete success',
+            statusCode: 0
+        });
+    } catch (error) {
+        return res.status(404).json({
+            message: error,
+            statusCode: 1
+        })
+    }
+    res.json({
+        message: 'Comment delete success',
+        statusCode: 0
+    })
+});
