@@ -20,7 +20,7 @@ module.exports.login = async (req, res) => {
             const accessToken = jwtHelper.generateToken(user, process.env.SECRET_KEY, '1h');
             const refreshToken = jwtHelper.generateToken(user, process.env.REFRESH_KEY, '30D');
             await Account.addRefreshToken(value.email, refreshToken);
-            return res.status(200).json({statusCode:0 , data:{user, accessToken, refreshToken }});
+            return res.status(200).json({ statusCode: 0, data: { user, accessToken, refreshToken } });
         }
     } catch (error) {
         res.send({ code: error.code, message: error.message || undefined });
@@ -48,7 +48,7 @@ module.exports.register = async (req, res) => {
             let activeCode = (Math.floor(Math.random() * (99999 - 10000)) + 10000).toString()
             await mailService.sendMail(value.email, cusName, activeCode, req, res);
             const result = await Account.register(req.body, activeCode);
-            return res.status(201).json({ statusCode: 0, accId:result[0],message: 'Register success' });
+            return res.status(201).json({ statusCode: 0, accId: result[0], message: 'Register success' });
         }
 
     } catch (error) {
@@ -76,7 +76,7 @@ module.exports.refreshToken = async (req, res) => {
             const dataUser = {
                 accId: result[0].id,
                 role: result[0].role_id,
-		status:0
+                status: 0
             }
             const accessToken = jwtHelper.generateToken(dataUser, process.env.SECRET_KEY, '1h');
             return res.status(200).json({ accessToken });
@@ -152,7 +152,7 @@ module.exports.newPassword = async (req, res) => {
                 statusCode: 1
             })
         }
-        await Account.newPassword(accPassword,accId);
+        await Account.newPassword(accPassword, accId);
         return res.status(200).json({
             statusCode: 0,
             message: "Change password success"
