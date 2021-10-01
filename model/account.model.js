@@ -18,6 +18,16 @@ async function updateRole(params) {
     return data;
 }
 
+async function updateAccount(params, accountId) {
+    const data = await knex('accounts').update(params).where('id', accountId);
+    return data;
+}
+
+async function updateAccountStatus(params, accountId) {
+    const data = await knex('accounts').update(params).where('id', accountId);
+    return data;
+}
+
 async function deleteAccount(params) {
     const data = await knex('accounts').update('status',1).where('id',params);
     return data;
@@ -37,5 +47,7 @@ module.exports = {
     getAccount,
     updateRole,
     deleteAccount,
-    updatePassword
+    updatePassword,
+    updateAccount,
+    updateAccountStatus
 };

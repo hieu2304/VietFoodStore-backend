@@ -70,6 +70,66 @@ module.exports.updateRole = asyncHandler(async function (req, res, next) {
     return res.status(422).send({ statusCode: 1, message: "not permission" })
 });
 
+module.exports.update = asyncHandler(async function (req, res, next) {
+    // {
+    //     accId: 9 (optional)
+    //     accEmail: “nt11061999@gmail.com” (optional)
+    //     accPhoneNumber: ‘0123456789’ (optional)
+    //     accFullName: ‘hashirama’ (optional)
+    //     }
+    let currentUser = jwtHelper.decodeToken(req.headers["authorization"], process.env.SECRET_KEY);
+    if (!currentUser) {
+        return res.status(401).send({ message: 'Invalid Token' });
+    }
+
+    var account = {
+        email: req.body.accEmail,
+        phoneNumber: req.body.accPhoneNumber,
+        fullName: req.body.accFullName,
+        update_date: new Date()
+    }
+
+    const result = await Account.updateAccount(account, req.body.accId);
+    if (!result) {
+        return res.status(400).send({ statusCode: 1, message: 'update failed' });
+    }
+    return res.status(200).send({ statusCode: 0, message: "update success" });
+});
+
+module.exports.updateStatus = asyncHandler(async function (req, res, next) {
+    // {
+    //     “accId” : number, (require)
+    //     “accStatus”: number (require)
+    // }
+    let currentUser = jwtHelper.decodeToken(req.headers["authorization"], process.env.SECRET_KEY);
+    if (!currentUser) {
+        return res.status(401).send({ message: 'Invalid Token' });
+    }
+
+    try {
+        const { error, value } = validate.checkAccountUpdateStatus(req.body);
+        if (error) {
+            res.status(422).json({
+                message: 'Invalid request',
+                data: req.body
+            })
+        } else {
+            var account = {
+                status: req.body.accStatus,
+                update_date: new Date()
+            }
+        
+            const result = await Account.updateAccountStatus(account, req.body.accId);
+            if (!result) {
+                return res.status(400).send({ statusCode: 1, message: 'update failed' });
+            }
+            return res.status(200).send({ statusCode: 0, message: "update success" });
+        }
+    } catch (error) {
+        res.send({ code: error.code, message: error.message || undefined });
+    }
+});
+
 /**
  * controller delete user
  * @param {*} req 
