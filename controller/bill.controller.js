@@ -35,7 +35,7 @@ module.exports.getDetails = asyncHandler(async function (req, res, next) {
                 accountID: billMaster.acc_id,
                 totalPrice: "76000",
                 billQuantity: 5,
-                billStatus: billMaster.status == 0? 'delivering': billMaster.status == 1? 'deliveried': billMaster.status == 2? 'cancel': '',
+                billStatus: billMaster.status == 0 ? 'delivering' : billMaster.status == 1 ? 'deliveried' : billMaster.status == 2 ? 'cancel' : '',
                 priceShip: billMaster.price_ship,
                 billAddress: billMaster.accdress,
                 fullNameReceiver: billMaster.receiver_name,
@@ -53,7 +53,7 @@ module.exports.getDetails = asyncHandler(async function (req, res, next) {
                 listDetail.billQuantity = 0;
                 listDetail.totalPrice = 0;
                 return listDetail;
-            }else {
+            } else {
                 //sum price
                 var sumPrice = 0;
                 result.forEach(element => {
@@ -73,12 +73,7 @@ module.exports.getDetails = asyncHandler(async function (req, res, next) {
     }
 });
 
-
 module.exports.getListBill = asyncHandler(async function (req, res, next) {
-    // {
-    //     “page”: 1
-    //     “limit”: 2
-    //     }
     let currentUser = jwtHelper.decodeToken(req.headers["authorization"], process.env.SECRET_KEY);
     if (!currentUser) {
         return res.status(401).send({ message: 'Invalid Token' });
@@ -87,7 +82,6 @@ module.exports.getListBill = asyncHandler(async function (req, res, next) {
     try {
         //get info bill
         const result_bill = await Bill.getList(currentUser.accId);
-        console.log('result_bill',result_bill);
         if (result_bill.length === 0) {
             return res.status(404).json({
                 ListDetail: [],
@@ -95,16 +89,15 @@ module.exports.getListBill = asyncHandler(async function (req, res, next) {
             })
         }
 
-        listBillResult = [];
-
-        await result_bill.forEach(async bill => {
+        var listBillResult = [];
+        result_bill.map(async bill => {
             var billMaster = bill;
             var listDetail = {
                 billId: billMaster.id,
                 accountID: billMaster.acc_id,
                 totalPrice: "76000",
                 billQuantity: 5,
-                billStatus: billMaster.status == 0? 'delivering': billMaster.status == 1? 'deliveried': billMaster.status == 2? 'cancel': '',
+                billStatus: billMaster.status == 0 ? 'delivering' : billMaster.status == 1 ? 'deliveried' : billMaster.status == 2 ? 'cancel' : '',
                 priceShip: billMaster.price_ship,
                 billAddress: billMaster.accdress,
                 fullNameReceiver: billMaster.receiver_name,
@@ -116,12 +109,11 @@ module.exports.getListBill = asyncHandler(async function (req, res, next) {
 
             //get detail bill
             var result = await Bill.getDetails(billMaster.id);
-            console.log('result_build_detail',result)
             if (result.length === 0) {
                 listDetail.billDetailList = [];
                 listDetail.billQuantity = 0;
                 listDetail.totalPrice = 0;
-            }else {
+            } else {
                 //sum price
                 var sumPrice = 0;
                 result.forEach(element => {
@@ -132,16 +124,13 @@ module.exports.getListBill = asyncHandler(async function (req, res, next) {
                 listDetail.billDetailList = result;
             }
             listBillResult.push(listDetail);
-            console.log(1111, listBillResult)
-        });
-        console.log('101010101001010101010100101001010101010')
-        console.log('-------------', listBillResult)
-
-        return res.status(200).json({
-            listBillResult: listBillResult,
-            statusCode: 0
+            if (listBillResult.length === result_bill.length) {
+                return res.status(200).json({
+                    listBillResult,
+                    statusCode: 0
+                })
+            }
         })
-        
     } catch (error) {
         res.send({ code: error.code, message: error.message || undefined });
     }
@@ -194,7 +183,7 @@ module.exports.addBill = asyncHandler(async function (req, res, next) {
 
         //add bill detail
         listProduct = req.body.listProduct;
-        if(listProduct.length > 0) {
+        if (listProduct.length > 0) {
             listProduct.forEach(async element => {
                 var bill_detail = {
                     bill_id: result_bill[0],
@@ -218,7 +207,7 @@ module.exports.addBill = asyncHandler(async function (req, res, next) {
     })
 });
 
-Date.prototype.addDays = function(days) {
+Date.prototype.addDays = function (days) {
     var date = new Date(this.valueOf());
     date.setDate(date.getDate() + days);
     return date;
