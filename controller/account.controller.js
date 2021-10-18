@@ -2,6 +2,7 @@ const Account = require('../model/account.model');
 const asyncHandler = require('express-async-handler');
 const jwtHelper = require('../lib/jwt');
 const validate = require('../lib/validate');
+const uploadfile = require('../lib/image');
 
 /**
  * controller get list account
@@ -170,5 +171,33 @@ module.exports.updatePassword = asyncHandler(async function (req, res, next) {
 		})
 	}
     const result = await Account.updatePassword(accPassWord,currentUser.id);
+
+});
+
+module.exports.updateImage = asyncHandler(async function (req, res, next) {
+    // {
+    //     accId : number, (require)
+    //     image : number (require)
+    // }
+    let currentUser = jwtHelper.decodeToken(req.headers["authorization"], process.env.SECRET_KEY);
+
+    if (!currentUser) {
+        return res.status(401).send({ message: 'Invalid Token' });
+    }
+
+    const resultImage= await uploadfile.avatarUploader(req.file, currentUser.accId, 'insert', null);
+    console.log('log');
+    console.log(resultImage)
+
+    return res.json({ image: resultImage });
+
+    
+
+    // const result = await Account.updateAccountStatus(account, req.body.accId);
+    // if (!result) {
+    //     return res.status(400).send({ statusCode: 1, message: 'update failed' });
+    // }
+    // return res.status(200).send({ statusCode: 0, message: "update success" });
+        
 
 });
