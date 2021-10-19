@@ -47,7 +47,6 @@ module.exports.getDetails = asyncHandler(async function (req, res, next) {
 
             //get detail bill
             const result = await Bill.getDetails(req.body.billId);
-            console.log(result)
             if (result.length === 0) {
                 listDetail.billDetailList = [];
                 listDetail.billQuantity = 0;

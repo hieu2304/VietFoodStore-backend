@@ -116,12 +116,6 @@ module.exports.addComment = asyncHandler(async function (req, res, next) {
 });
 
 module.exports.updateComment = asyncHandler(async function (req, res, next) {
-    // {
-    //     “commentID” : 12,
-    //     “content” : “Nội dung comment mới 6”,
-    //     “vote” : 5
-    // }
-    
     try {
         let currentUser = jwtHelper.decodeToken(req.headers["authorization"], process.env.SECRET_KEY);
         if (!currentUser) {
@@ -165,11 +159,7 @@ module.exports.updateComment = asyncHandler(async function (req, res, next) {
     })
 });
 
-module.exports.deleteComment = asyncHandler(async function (req, res, next) {
-    // {
-    //     “commentID” : 13
-    // }
-    
+module.exports.deleteComment = asyncHandler(async function (req, res, next) {    
     try {
         let currentUser = jwtHelper.decodeToken(req.headers["authorization"], process.env.SECRET_KEY);
         if (!currentUser) {
