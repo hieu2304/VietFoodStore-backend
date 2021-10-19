@@ -175,10 +175,6 @@ module.exports.updatePassword = asyncHandler(async function (req, res, next) {
 });
 
 module.exports.updateImage = asyncHandler(async function (req, res, next) {
-    // {
-    //     accId : number, (require)
-    //     image : number (require)
-    // }
     let currentUser = jwtHelper.decodeToken(req.headers["authorization"], process.env.SECRET_KEY);
 
     if (!currentUser) {
@@ -190,14 +186,4 @@ module.exports.updateImage = asyncHandler(async function (req, res, next) {
     console.log(resultImage)
 
     return res.json({ image: resultImage });
-
-    
-
-    // const result = await Account.updateAccountStatus(account, req.body.accId);
-    // if (!result) {
-    //     return res.status(400).send({ statusCode: 1, message: 'update failed' });
-    // }
-    // return res.status(200).send({ statusCode: 0, message: "update success" });
-        
-
 });

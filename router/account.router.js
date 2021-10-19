@@ -10,6 +10,6 @@ router.post('/update',authMiddleware.isAuth,controller.update); //2/Update accou
 router.delete('/delete/:id?',authMiddleware.isAuth,controller.deleteAccount);
 router.post('/update-role',authMiddleware.isAuth,controller.updateRole); //5/Update ROLE
 router.post('/update-status',authMiddleware.isAuth,controller.updateStatus); //8/Update Status
-router.post('/update-avatar',authMiddleware.isAuth,multerMiddleware.single('image'),controller.updateImage); //6/Add Or Update Avatar
+// router.post('/update-avatar',authMiddleware.isAuth,multerMiddleware.single('image'),controller.updateImage); //6/Add Or Update Avatar
 
 module.exports = router;

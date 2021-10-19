@@ -248,17 +248,12 @@ module.exports.cancelBill = asyncHandler(async function (req, res, next) {
 });
 
 module.exports.updateStatus = asyncHandler(async function (req, res, next) {
-    // {
-    //     “billId”:60,
-    //     “status”:“shipping”
-    //     }
     let currentUser = jwtHelper.decodeToken(req.headers["authorization"], process.env.SECRET_KEY);
     if (!currentUser) {
         return res.status(401).send({ message: 'Invalid Token' });
     }
 
     var status = 0;
-    //get status
     if (req.body.status == 'deliveried') {
         status = 1;
     } else if (req.body.status == 'cancel') {
