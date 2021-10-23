@@ -79,8 +79,24 @@ module.exports.getListBill = asyncHandler(async function (req, res, next) {
     }
 
     try {
+        // get param billMaster.status == 0 ? 'delivering' : billMaster.status == 1 ? 'deliveried' : billMaster.status == 2 ? 'cancel' : '',
+        const statusParams = req.query.status || req.params.status || 'all';
+        var status = null;
+        if (statusParams == 'delivered') {
+            status = 1;
+        }else if (statusParams == 'shipping') {
+            status = 0;
+        }else if (statusParams == 'cancel') {
+            status = 2;
+        }else {
+            //get all
+            status = null;
+        }
+
+        const result_bill = await Bill.getList(currentUser.accId, status);
+
         //get info bill
-        const result_bill = await Bill.getList(currentUser.accId);
+        
         if (result_bill.length === 0) {
             return res.status(404).json({
                 ListDetail: [],
@@ -122,12 +138,39 @@ module.exports.getListBill = asyncHandler(async function (req, res, next) {
                 listDetail.billQuantity = result.length;
                 listDetail.billDetailList = result;
             }
+
             listBillResult.push(listDetail);
             if (listBillResult.length === result_bill.length) {
-                return res.status(200).json({
-                    listBillResult,
+                //page and limit
+                let { page, limit } = req.query;
+                let paginationResult = [];
+                if (page || limit) {
+                    let startIndex = (parseInt(page) - 1) * parseInt(limit)
+                    let endIndex = (parseInt(page) * parseInt(limit))
+                    let totalPage = Math.floor(listBillResult.length / parseInt(limit))
+
+                    if (listBillResult.length % parseInt(limit) !== 0) {
+                        totalPage = totalPage + 1
+                    }
+
+                    paginationResult = listBillResult.slice(startIndex, endIndex);
+                    return res.status(200).send({
+                        totalPage,
+                        paginationResult,
+                        statusCode: 0
+                    });
+                }
+                return res.status(200).send({
+                    totalPage: listBillResult.length,
+                    paginationResult: listBillResult,
                     statusCode: 0
-                })
+
+                });
+                
+                // return res.status(200).json({
+                //     listBillResult,
+                //     statusCode: 0
+                // })
             }
         })
     } catch (error) {

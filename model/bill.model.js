@@ -21,8 +21,13 @@ async function getBillById(billId) {
     return data;
 }
 
-async function getList(params) {
-    const result = await knex('bills').where('acc_id',params);
+async function getList(userId, status) {
+    var result = null;
+    if (status) {
+        result = await knex('bills').where({ 'acc_id':userId, 'status': status });
+    }else {
+        result = await knex('bills').where({ 'acc_id':userId });
+    }
     return result;
 }
 
