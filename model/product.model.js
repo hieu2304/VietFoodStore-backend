@@ -95,10 +95,25 @@ async function getDetail(id) {
         })
     return prodObject;
 }
+const findAll = async () => {
+	const info = await knex('products')
+	return info
+}
 
+const findAllImage = async () => {
+    const info = await knex('product_images')
+    return info
+}
+const findById = async (prodId) => {
+	const info = await knex('products').where({ id: prodId })
+	return info
+}
 module.exports = {
     getAll,
+    findById,
+    findAllImage,
     getDetail,
+    findAll,
     getTopMonth,
     getSuggestion,
     totalPageSuggestion,

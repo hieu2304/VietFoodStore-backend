@@ -10,5 +10,6 @@ router.use('/bill',require('./router/bill.router'));
 router.use('/products',require('./router/product.router'))
 router.use('/comment',require('./router/comment.router'));
 router.use('/delivery',require('./router/delivery-address.router'));
+router.use('/cart',require('./router/stock.router'));
 
 module.exports = router;

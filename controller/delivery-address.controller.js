@@ -106,3 +106,24 @@ module.exports.getListDelivery = asyncHandler(async function (req, res, next) {
         statusCode: 1
     })
 });
+
+module.exports.addDelivery = asyncHandler(async function (req, res, next) {
+    const { wardId, delDetailAddress } = req.body
+    let currentUser = jwtHelper.decodeToken(req.headers["authorization"], process.env.SECRET_KEY);
+    if (!currentUser) {
+        return res.status(401).send({ message: 'Invalid Token' });
+    }
+    const checkWards = await Delivery.findWardById(wardId)
+    const newDelivery = {
+		city_id: checkWards[0].ward_city_id,
+		district_id: checkWards[0].ward_dis_id,
+		ward_id: wardId, 
+		detail_address: delDetailAddress, 
+		acc_id: currentUser.accId
+	}
+    const returnInfo = await Delivery.addDelivery(newDelivery)
+    return res.status(200).json({
+		delId: returnInfo[0],
+		statusCode: successCode
+	})
+});

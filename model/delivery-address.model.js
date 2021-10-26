@@ -77,6 +77,11 @@ async function getNameWard(id){
     const data = await knex('wards').where('id', id).returning('name');
     return data[0].name;
 }
+async function findWardById(wardId) {
+    const info = await knex('wards')
+					.where({ id: wardId })
+	return info
+}
 module.exports = {
     listCity,
     listDistrict,
@@ -96,5 +101,6 @@ module.exports = {
     deleteDelivery,
     getNameCity,
     getNameDistrict,
-    getNameWard
+    getNameWard,
+    findWardById,
 };
