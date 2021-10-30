@@ -61,10 +61,34 @@ async function deleteById(id) {
 async function update(id, categoryWithoutId) {
     return knex('categories').where('id', id).update(categoryWithoutId);
 }
+const findFatherWithLimit = async () => {
+    const info = await knex('categories')
+                    .distinctOn('father_id')
+                    .whereNot({ father_id: null })
+                    .limit(10)
 
+    return info
+}
+
+const findAllFather = async () => {
+    const info = await knex('categories')
+                    .where({ father_id: null })
+
+    return info
+}
+
+const findChild = async (cateFather) => {
+    const info = await knex('categories')
+                    .where({ father_id: cateFather })
+
+    return info
+}
 module.exports = {
     getAll,
     findById,
+    findChild,
+    findAllFather,
+    findFatherWithLimit,
     findByFatherId,
     add,
     deleteById,

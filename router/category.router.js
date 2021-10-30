@@ -12,4 +12,5 @@ router.post('/addFatherSubCategory', controller.addFatherSubCategory);
 router.post('/auth-categories/delete', controller.delete);
 router.post('/update', controller.update); //update basic
 router.post('/auth-categories/update', controller.updateFatherSubCategory);
+router.get('/product-with-cate',controller.productWithCate);
 module.exports = router;

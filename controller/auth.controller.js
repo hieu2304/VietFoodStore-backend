@@ -17,6 +17,9 @@ module.exports.login = async (req, res) => {
             })
         } else {
             const user = await Account.login(value.email, value.passWord);
+            if(!user){
+                return res.status(400).json({ statusCode: 1, message:'Invalid login' });
+            }
             const accessToken = jwtHelper.generateToken(user, process.env.SECRET_KEY, '1h');
             const refreshToken = jwtHelper.generateToken(user, process.env.REFRESH_KEY, '30D');
             await Account.addRefreshToken(value.email, refreshToken);

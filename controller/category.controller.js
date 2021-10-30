@@ -1,4 +1,5 @@
 const Category = require('../model/category.model');
+const Product = require('../model/product.model');
 const asyncHandler = require('express-async-handler');
 const validate = require("../lib/validate");
 
@@ -276,12 +277,6 @@ module.exports.delete = asyncHandler(async function (req, res, next) {
 });
 
 module.exports.updateFatherSubCategory = asyncHandler(async function (req, res, next) {
-    // {
-    //     cateId: '',
-    //     cateName: '',
-    //     cateFather; '' if TH cateFather(father_id) have-> update child by fatherId
-    // }
-
     try {
         const { error, value } = validate.checkCategoryUpdate(req.body);
         if (error) {
@@ -344,3 +339,68 @@ module.exports.update = asyncHandler(async function (req, res, next) {
         category
     });
 });
+
+module.exports.productWithCate = asyncHandler(async function (req, res, next) {
+
+	const fathersInfo = await Category.findFatherWithLimit()
+	const listCategories = await Category.getAll()
+	const listProducts = await Product.findAll()
+	const listProductImages = await await Product.findAllImage ()
+
+	if (fathersInfo.length !== 0) {
+		const childResult = fathersInfo.map((element) => {
+			const listChild = listCategories.filter((item) => element.father_id === item.father_id)
+			
+			const fatherInfo = listCategories.find((item) => element.father_id === item.id)
+
+			return {
+				id: fatherInfo.id,
+				name: fatherInfo.name,
+				listChild
+			}
+		})
+
+		
+
+		let result = []
+		childResult.forEach((element) => {
+			let productsWithCate = []
+			element.listChild.forEach((item) => {
+				const productsInfo = listProducts.filter((prodInfo) => +prodInfo.cate_id === item.id)
+				productsInfo.forEach((prodInfo) => {
+                    
+					const productImageInfo = listProductImages.find((prodImgInfo) => prodImgInfo.prod_id === prodInfo.id)
+					const prodInfoJson = {
+						prodId: prodInfo.id,
+						prodName: prodInfo.name,
+						prodCategory: prodInfo.cate_id,
+						prodAmount: prodInfo.amount,
+						prodPrice: prodInfo.price,
+						prodDescription: prodInfo.description,
+						prodImage: productImageInfo ? productImageInfo.data : ''
+					}
+
+					if (prodInfoJson.prodAmount !== 0) {
+						productsWithCate.push(prodInfoJson)
+					}
+				})
+			})
+			const resultInfo = {
+				id: element.id,
+				name: element.name,
+				listProducts: productsWithCate
+			}
+
+			result.push(resultInfo)
+		})
+
+		return res.status(200).json({
+			statusCode: 0,
+			information: result
+		})
+	}
+
+	return res.status(400).json({
+		statusCode: 1
+	})
+})

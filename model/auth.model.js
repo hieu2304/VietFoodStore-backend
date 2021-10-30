@@ -10,14 +10,14 @@ function hashPassword(passwordInput) {
 }
 
 async function login(username, password) {
-    const authUser = await knex('accounts').where('username', username).orWhere('email', username);
+    const authUser = await knex('accounts').where('email', username);
     if (!verifyPassword(password, authUser[0].password)) {
         return null;
     }
     const result = {
         accId: authUser[0].id,
         role: 'ADM',
-        accStatus:authUser[0].status
+        accStatus:+authUser[0].status
     }
     return result;
 }

@@ -49,7 +49,7 @@ async function getListByCart(catID, limit, offset) {
 		offset ${offset}
 		limit ${limit}
 	)
-	select pr.*,img.data from product pr left join product_images img
+	select pr.*,img.data from products pr left join product_images img
 	on img.prod_id = pr.id`)
     return result;
 }

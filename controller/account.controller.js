@@ -14,10 +14,51 @@ module.exports.getAll = asyncHandler(async function (req, res, next) {
     if (!currentUser) {
         return res.status(401).send({ message: 'Invalid Token' });
     }
-    if (currentUser.role == 2 || currentUser.role == 3) {
-        let result = await Account.getAll(currentUser);
-        if (result.length === 0) return res.status(400).send({ message: 'Get failed' });
-        return res.status(200).send(result);
+    console.log(currentUser)
+    const { page, limit } = req.query
+    if (currentUser.role === 'ADM') {
+        let results = await Account.getAll(currentUser);
+        const filterAccount = results.filter((item) => item.id !== currentUser.accId)
+        const result = await Promise.all([
+            filterAccount.map((element) => {
+                return {
+                    accId: element.id,
+                    accEmail: element.email,
+                    accPhoneNumber: element.phoneNumber,
+                    accFullName: element.fullName,
+                    accAvatar: element.avatar,
+                    accStatus: element.status,
+                    accRole: element.role_id === 2 ? 'Admin' : 'User'
+                }
+            })
+        ])
+    
+        if (result) {
+            result.sort((a, b) => a - b)
+    
+            if (page || limit) {
+                let startIndex = (parseInt(page) - 1) * parseInt(limit)
+                let endIndex = (parseInt(page) * parseInt(limit))
+                let totalPage = Math.floor(result[0].length / parseInt(limit))
+    
+                if (result[0].length % parseInt(limit) !== 0) {
+                    totalPage = totalPage + 1
+                }
+    
+                const paginationResult = result[0].slice(startIndex, endIndex)
+    
+                return res.status(200).json({
+                    totalPage: totalPage,
+                    listAccounts: paginationResult,
+                    statusCode: 0
+                })
+            }
+    
+            return res.status(200).json({
+                listAccounts: result[0],
+                statusCode: 0
+            })
+        }
     }
     return res.status(422).send({ statusCode: 1, message: "not permission" })
 });
