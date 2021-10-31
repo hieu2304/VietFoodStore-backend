@@ -46,9 +46,26 @@ module.exports.getListCommentByProductId = asyncHandler(async function (req, res
 
         commentList = result.slice(startIndex, endIndex);
         return res.status(200).send({
-            numberOfPage,
-            commentList,
-            statusCode: 0,
+            listComment: {
+                numberOfPage,
+                commentList,
+                numberOfUserComment: numberOfUserComment,
+                numberOfComment,
+                avgStar: avgStar.round ,
+                numberOneStar: numberOneStar.count,
+                numberTwoStars: numberTwoStars.count,
+                numberThreeStars: numberThreeStars.count,
+                numberFourStars: numberFourStars.count,
+                numberFiveStars: numberFiveStars.count,
+            },
+            statusCode: 0
+        });
+    }
+
+    return res.status(200).send({
+        listComment: {
+            numberOfPage: result.length,
+            commentList: result,
             numberOfUserComment: numberOfUserComment,
             numberOfComment,
             avgStar: avgStar.round ,
@@ -56,22 +73,10 @@ module.exports.getListCommentByProductId = asyncHandler(async function (req, res
             numberTwoStars: numberTwoStars.count,
             numberThreeStars: numberThreeStars.count,
             numberFourStars: numberFourStars.count,
-            numberFiveStars: numberFiveStars.count,
-        });
-    }
-
-    return res.status(200).send({
-        numberOfPage: result.length,
-        commentList: result,
+            numberFiveStars: numberFiveStars.count
+        },
         statusCode: 0,
-        numberOfUserComment: numberOfUserComment,
-        numberOfComment,
-        avgStar: avgStar.round ,
-        numberOneStar: numberOneStar.count,
-        numberTwoStars: numberTwoStars.count,
-        numberThreeStars: numberThreeStars.count,
-        numberFourStars: numberFourStars.count,
-        numberFiveStars: numberFiveStars.count,
+        
     });
 });
 

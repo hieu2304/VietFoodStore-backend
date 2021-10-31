@@ -120,6 +120,7 @@ module.exports.addCart = asyncHandler(async function (req, res, next) {
 			prod_id: prodId,
 			amount: cartAmount,
 			status: 1,
+			price: productInfo[0].price,
 			updated_date: presentDate
 		}
 
