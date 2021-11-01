@@ -81,6 +81,7 @@ module.exports.getListBill = asyncHandler(async function (req, res, next) {
     try {
         // get param billMaster.status == 0 ? 'delivering' : billMaster.status == 1 ? 'deliveried' : billMaster.status == 2 ? 'cancel' : '',
         const statusParams = req.query.status || req.params.status || 'all';
+        console.log(statusParams)
         var status = null;
         if (statusParams == 'delivered') {
             status = 1;
@@ -99,8 +100,8 @@ module.exports.getListBill = asyncHandler(async function (req, res, next) {
         
         if (result_bill.length === 0) {
             return res.status(404).json({
-                ListDetail: [],
-                statusCode: 1,
+                billList: [],
+                statusCode: 0,
             })
         }
 
@@ -143,7 +144,7 @@ module.exports.getListBill = asyncHandler(async function (req, res, next) {
             if (listBillResult.length === result_bill.length) {
                 //page and limit
                 let { page, limit } = req.query;
-                let paginationResult = [];
+                let billList = [];
                 if (page || limit) {
                     let startIndex = (parseInt(page) - 1) * parseInt(limit)
                     let endIndex = (parseInt(page) * parseInt(limit))
@@ -153,16 +154,16 @@ module.exports.getListBill = asyncHandler(async function (req, res, next) {
                         totalPage = totalPage + 1
                     }
 
-                    paginationResult = listBillResult.slice(startIndex, endIndex);
+                    billList = listBillResult.slice(startIndex, endIndex);
                     return res.status(200).send({
                         totalPage,
-                        paginationResult,
+                        billList,
                         statusCode: 0
                     });
                 }
                 return res.status(200).send({
                     totalPage: listBillResult.length,
-                    paginationResult: listBillResult,
+                    billList: listBillResult,
                     statusCode: 0
 
                 });
