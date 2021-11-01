@@ -55,10 +55,10 @@ module.exports.getListWard = asyncHandler(async function (req, res, next) {
     const id = req.body.cityId;
     const disId = req.body.districtId;
     let data = await Delivery.listWard(disId,id);
-    var listWard = [];
+    var listcities = [];
     if (data.length > 0) {
         for (var i = 0; i < data.length; i++) {
-            listWard.push({
+            listcities.push({
                 ward_id: data[i].id,
                 ward_name: data[i].name,
                 ward_city_id: data[i].city_id,
@@ -68,12 +68,12 @@ module.exports.getListWard = asyncHandler(async function (req, res, next) {
             })
         }
         return res.status(200).json({
-            listWard,
+            listcities,
             statusCode: 0
         })
     }
     return res.status(400).json({
-        listWard,
+        listcities,
         statusCode: 1
     })
 });

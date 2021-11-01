@@ -27,7 +27,6 @@ module.exports.getList = asyncHandler(async function (req, res, next) {
 		listCart.map((item) => {
 			const productInfo = listProduct.find((info) => info.id === item.prod_id)
 			const productImage = listProductImages.find((info) => info.prod_id === item.prod_id)
-
 			if (productInfo) {
 				totalPrice = totalPrice + item.amount * parseInt(productInfo.price)
 				totalAmount = totalAmount + item.amount
@@ -37,8 +36,8 @@ module.exports.getList = asyncHandler(async function (req, res, next) {
 					prodName: productInfo.name,
 					prodPrice: productInfo.price,
 					prodImage: productImage ? productImage.data : '',
-					totalPrice: item.cart_amount * parseInt(productInfo.price),
-					cartAmount: item.cart_amount
+					totalPrice: item.amount * parseInt(productInfo.price),
+					cartAmount: item.amount,
 				}
 			}
 
@@ -48,7 +47,7 @@ module.exports.getList = asyncHandler(async function (req, res, next) {
 		})
 	])
 
-	if (result) {
+	if (result) {	
 		if (result.length === 0) {
 			return res.status(500).json({
 				statusCode: 1
