@@ -116,7 +116,7 @@ module.exports.addDelivery = asyncHandler(async function (req, res, next) {
     const checkWards = await Delivery.findWardById(wardId)
     const newDelivery = {
 		city_id: checkWards[0].ward_city_id,
-		district_id: checkWards[0].ward_dis_id,
+		dis_id: checkWards[0].ward_dis_id,
 		ward_id: wardId, 
 		detail_address: delDetailAddress, 
 		acc_id: currentUser.accId
@@ -124,6 +124,6 @@ module.exports.addDelivery = asyncHandler(async function (req, res, next) {
     const returnInfo = await Delivery.addDelivery(newDelivery)
     return res.status(200).json({
 		delId: returnInfo[0],
-		statusCode: successCode
+		statusCode: 0
 	})
 });
