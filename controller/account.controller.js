@@ -1,4 +1,5 @@
 const Account = require('../model/account.model');
+const DeliveryAddress = require('../model/delivery-address.model');
 const asyncHandler = require('express-async-handler');
 const jwtHelper = require('../lib/jwt');
 const validate = require('../lib/validate');
@@ -74,14 +75,27 @@ module.exports.getAccount = asyncHandler(async function (req, res, next) {
     if (!currentUser) {
         return res.status(401).send({ message: 'Invalid Token' });
     }
-    if (currentUser.role == 2 || currentUser.role == 3) {
-        const result = await Account.getAccount(req.query);
+    const id = req.query.id || req.params.id;
+    // if (currentUser.role == 2 || currentUser.role == 3) {
+        const result = await Account.getAccount(id);
         if (result.length === 0) {
             return res.status(400).send({ statusCode: 1, message: 'Get failed' });
         }
-        return res.status(200).send(result);
-    }
-    return res.status(422).send({ statusCode: 1, message: "not permission" })
+
+        const listDeliveryAddress = DeliveryAddress.listDeliveries(id);
+        var objectResult = {
+            account: {
+                accEmail: result[0].email,
+                accFullName: result[0].fullName,
+                accPhoneNumber: result[0].phoneNumber,
+                accAvatar: result[0].avatar,
+                deliveryAddress: listDeliveryAddress
+            },
+            statusCode: 0
+        }
+        return res.status(200).send(objectResult);
+    // }
+    // return res.status(422).send({ statusCode: 1, message: "not permission" })
 });
 
 /**

@@ -8,8 +8,7 @@ async function getAll(staff) {
 }
 
 async function getAccount(params) {
-    let id = parseInt(params.id)
-    const data = await knex('accounts').where('id',id);
+    const data = await knex('accounts').where('id',params);
     return data;
 }
 
