@@ -2,7 +2,7 @@ const knex = require('../util/knex');
 const _ = require('lodash');
 
 async function getCommentByProductId(productId) {
-    const data = await knex.select('comments.id', 'acc_id', 'content', 'vote', 'comments.status', 'prod_id', 'username', 'fullName', 'email')
+    const data = await knex.select('comments.id', 'acc_id', 'content', 'star', 'comments.status', 'prod_id', 'username', 'fullName', 'email')
     .from('comments')
     .where({
         prod_id: productId
