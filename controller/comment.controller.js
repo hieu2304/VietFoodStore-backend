@@ -51,12 +51,12 @@ module.exports.getListCommentByProductId = asyncHandler(async function (req, res
                 commentList,
                 numberOfUserComment: numberOfUserComment,
                 numberOfComment,
-                avgStar: avgStar.round == null ? 0: avgStar.round,
-                numberOneStar: numberOneStar.count,
-                numberTwoStars: numberTwoStars.count,
-                numberThreeStars: numberThreeStars.count,
-                numberFourStars: numberFourStars.count,
-                numberFiveStars: numberFiveStars.count,
+                avgStar: avgStar.round == null ? 0: +avgStar.round,
+                numberOneStar: +numberOneStar.count,
+                numberTwoStars: +numberTwoStars.count,
+                numberThreeStars: +numberThreeStars.count,
+                numberFourStars: +numberFourStars.count,
+                numberFiveStars: +numberFiveStars.count,
             },
             statusCode: 0
         });
@@ -68,12 +68,12 @@ module.exports.getListCommentByProductId = asyncHandler(async function (req, res
             commentList: result,
             numberOfUserComment: numberOfUserComment,
             numberOfComment,
-            avgStar: avgStar.round == null ? 0: avgStar.round,
-            numberOneStar: numberOneStar.count,
-            numberTwoStars: numberTwoStars.count,
-            numberThreeStars: numberThreeStars.count,
-            numberFourStars: numberFourStars.count,
-            numberFiveStars: numberFiveStars.count
+            avgStar: avgStar.round == null ? 0: +avgStar.round,
+            numberOneStar: +numberOneStar.count,
+            numberTwoStars: +numberTwoStars.count,
+            numberThreeStars: +numberThreeStars.count,
+            numberFourStars: +numberFourStars.count,
+            numberFiveStars: +numberFiveStars.count
         },
         statusCode: 0,
         
