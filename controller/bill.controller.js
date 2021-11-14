@@ -111,7 +111,7 @@ module.exports.getListBill = asyncHandler(async function (req, res, next) {
                 accountID: billMaster.acc_id,
                 totalPrice: "76000",
                 billQuantity: 5,
-                billStatus: billMaster.status == 0 ? 'delivering' : billMaster.status == 1 ? 'delivered' : billMaster.status == 2 ? 'cancel' : '',
+                billStatus: billMaster.status == 0 ? 'shipping' : billMaster.status == 1 ? 'delivered' : billMaster.status == 2 ? 'cancel' : '',
                 priceShip: billMaster.price_ship,
                 billAddress: billMaster.accdress,
                 fullNameReceiver: billMaster.receiver_name,
