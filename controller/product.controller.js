@@ -142,7 +142,7 @@ module.exports.getTopMonth = asyncHandler(async function (req, res, next) {
                     prod_created_date: moment(result.rows[i].create_date).format('DD/MM/YYYY'),
                     prod_updated_date: moment(result.rows[i].update_date).format('DD/MM/YYYY'),
                     prod_price: result.rows[i].price,
-                    image: images
+                    images
                 })
 
             }
@@ -205,7 +205,7 @@ module.exports.getSuggestion = asyncHandler(async function (req, res, next) {
                     prod_created_date: moment(result.rows[i].create_date).format('DD/MM/YYYY'),
                     prod_updated_date: moment(result.rows[i].update_date).format('DD/MM/YYYY'),
                     prod_price: result.rows[i].price,
-                    image: images
+                    images
                 })
 
             }
@@ -279,7 +279,7 @@ module.exports.getListByCart = asyncHandler(async function (req, res, next) {
                     prod_updated_date: moment(result.rows[i].update_date).format('DD/MM/YYYY'),
                     prod_price: result.rows[i].price,
                     prod_description:result.rows[i].description,
-                    image: images
+                    images
                 })
 
             }
@@ -376,7 +376,7 @@ module.exports.getListByCart = asyncHandler(async function (req, res, next) {
                     prod_updated_date: moment(result.rows[i].update_date).format('DD/MM/YYYY'),
                     prod_price: result.rows[i].price,
                     prod_description:result.rows[i].description,
-                    image: images
+                    images
                 })
 
             }
