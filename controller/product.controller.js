@@ -329,7 +329,7 @@ module.exports.getListByCart = asyncHandler(async function (req, res, next) {
     }
     const offset = limit * (page - 1)
 
-    if(filter != 'name' && filter != 'amount' && filter != 'create_date' && filter != 'update_date' && filter != 'price'){
+    if(filter != 'prod_name' && filter != 'prod_amount' && filter != 'prod_created_date' && filter != 'prod_updated_date' && filter != 'prod_price'){
 		return res.status(400).json({
 			errorMessage: "filter is invalid!",
 			statusCode: 1
@@ -389,6 +389,22 @@ module.exports.getListByCart = asyncHandler(async function (req, res, next) {
     }
     else {
         numberPage = 1
+    }
+    let temp = create_date
+    if(filter === 'prod_created_date'){
+        temp = 'create_date'
+    }
+    if(filter === 'prod_name'){
+        temp = 'name'
+    }
+    if(filter === 'prod_updated_date'){
+        temp = 'update_date'
+    }
+    if(filter === 'prod_price'){
+        temp = 'price'
+    }
+    if(filter === 'prod_amount'){
+        temp = 'amount'
     }
     if(sortBy == 'asc')
 		listProduct.sort(function(a,b){return a[filter] - b[filter]})
