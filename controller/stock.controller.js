@@ -31,7 +31,7 @@ module.exports.getList = asyncHandler(async function (req, res, next) {
 				totalPrice = totalPrice + item.amount * parseInt(productInfo.price)
 				totalAmount = totalAmount + item.amount
 				return {
-					cartId: item.cart_id,
+					cartId: item.id,
 					prodId: productInfo.id,
 					prodName: productInfo.name,
 					prodPrice: productInfo.price,
