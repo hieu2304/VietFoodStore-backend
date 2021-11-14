@@ -22,7 +22,7 @@ async function getNumberOfUserComment(productId) {
 
 async function getAvgStar(productId) {
     const data = await knex.raw(`
-    select round(AVG(a.vote))
+    select round(AVG(a.star))
     from "comments" a
     where a.prod_id = ${productId}` );
     return data.rows[0];
@@ -33,7 +33,7 @@ async function countNumberStar(productId, number) {
     select count(a.*)
     from "comments" a
     where a.prod_id = ${productId}
-    and a.vote = ${number}` );
+    and a.star = ${number}` );
     return data.rows[0];
 }
 

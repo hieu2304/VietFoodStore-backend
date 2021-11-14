@@ -58,7 +58,7 @@ async function getSuggestion(limit, offset) {
     const data = await knex.raw(`
     select d.id, d.name, d.cate_id, d.price, e."data", d.amount, d.avg_vote 
     from (
-        select a.id,  a."name", a.cate_id, a.price, a.amount, avg(b.vote) avg_vote
+        select a.id,  a."name", a.cate_id, a.price, a.amount, avg(b.star) avg_vote
         from products a, COMMENTS b
         where a.id= b.prod_id
         group by a.id,  a."name", a.cate_id, a.price, a.amount) d, 

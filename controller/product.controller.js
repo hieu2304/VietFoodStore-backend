@@ -176,6 +176,7 @@ module.exports.getSuggestion = asyncHandler(async function (req, res, next) {
     const offset = limit * (page - 1)
     let result = await Product.getSuggestion(limit, offset);
     var listProduct = [];
+    console.log(result)
     if (result.rows.length > 0) {
         for (var i = 0; i < result.rows.length; i++) {
             const id_cate = result.rows[i].id;

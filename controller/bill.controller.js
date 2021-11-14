@@ -275,7 +275,6 @@ module.exports.cancelBill = asyncHandler(async function (req, res, next) {
         };
 
         const result_bill = await Bill.cancelBill(bill);
-        console.log(result_bill)
 
     } catch (error) {
         return res.status(404).json({
