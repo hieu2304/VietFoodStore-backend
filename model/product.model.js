@@ -42,14 +42,14 @@ async function totalPageByCart(catID) {
     return data;
 }
 async function getListByCart(catID, limit, offset) {
-    const result = await knex.raw(`with product as(
-		select * from products
-		where products.cate_id = ${catID}
-		order by products.create_date desc
-		offset ${offset}
+    const result = await knex.raw(`with product as (
+		SELECT * 
+        FROM products
+		WHERE cate_id = ${catID} 
 		limit ${limit}
+        offset ${offset}
 	)
-	select pr.*,img.data from products pr left join product_images img
+	select pr.*,img.data from product pr left join product_images img
 	on img.prod_id = pr.id`)
     return result;
 }
