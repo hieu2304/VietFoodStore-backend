@@ -22,7 +22,6 @@ module.exports.getDetails = asyncHandler(async function (req, res, next) {
         } else {
             //get info bill
             const result_bill = await Bill.getBillById(req.body.billId);
-            console.log(result_bill);
             if (result_bill.length === 0) {
                 return res.status(404).json({
                     ListDetail: [],
@@ -81,7 +80,6 @@ module.exports.getListBill = asyncHandler(async function (req, res, next) {
     try {
         // get param billMaster.status == 0 ? 'delivering' : billMaster.status == 1 ? 'deliveried' : billMaster.status == 2 ? 'cancel' : '',
         const statusParams = req.query.status || req.params.status || 'all';
-        console.log(statusParams)
         var status = null;
         if (statusParams == 'delivered') {
             status = 1;
@@ -221,8 +219,6 @@ module.exports.addBill = asyncHandler(async function (req, res, next) {
         };
 
         const result_bill = await Bill.add(bill);
-        console.log(result_bill)
-        console.log("ádasd")
 
         //add bill detail
         listProduct = req.body.listProduct;
@@ -233,7 +229,6 @@ module.exports.addBill = asyncHandler(async function (req, res, next) {
                     prod_id: element.prodId,
                     quantity: element.prodQuantity,
                 };
-                console.log(bill_detail)
                 await Bill.addBillDetail(bill_detail);
             });
         }
@@ -261,7 +256,6 @@ module.exports.cancelBill = asyncHandler(async function (req, res, next) {
     //     “billId”: 10
     // }
     let currentUser = jwtHelper.decodeToken(req.headers["authorization"], process.env.SECRET_KEY);
-    console.log(currentUser)
     if (!currentUser) {
         return res.status(401).send({ message: 'Invalid Token' });
     }
@@ -312,7 +306,6 @@ module.exports.updateStatus = asyncHandler(async function (req, res, next) {
         };
 
         const result_bill = await Bill.updateStatusBill(bill, req.body.billId);
-        console.log(result_bill)
 
     } catch (error) {
         return res.status(404).json({

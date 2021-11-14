@@ -6,13 +6,14 @@ async function getDetails(billId) {
     select 
         a.prod_id productID, b."name" prodName, c."name" prodCategory, a.quantity prodQuantity, 
         b.description prodDescription, c.create_date prodCreatedDate, c.update_date prodUpdatedDate,
-        b.price prodPrice
+        b.price prodPrice, d.data images
     from 
-        bill_details a, products b, categories c
+        bill_details a, products b, categories c, product_images d
     where 
         a.prod_id = b.id
         and a.bill_id = ${billId}
-        and b.cate_id = c.id;` );
+        and b.cate_id = c.id
+        and b.id = d.prod_id;` );
     return data.rows;
 }
 
