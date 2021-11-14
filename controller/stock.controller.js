@@ -25,8 +25,8 @@ module.exports.getList = asyncHandler(async function (req, res, next) {
 
 	const result = await Promise.all([
 		listCart.map((item) => {
-			const productInfo = listProduct.find((info) => info.id === item.prod_id)
-			const productImage = listProductImages.find((info) => info.prod_id === item.prod_id)
+			const productInfo = listProduct.find((info) => info.id === +item.prod_id)
+			const productImage = listProductImages.find((info) => +info.prod_id === item.prod_id)
 			if (productInfo) {
 				totalPrice = totalPrice + item.amount * parseInt(productInfo.price)
 				totalAmount = totalAmount + item.amount
