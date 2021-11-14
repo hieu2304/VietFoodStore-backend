@@ -390,7 +390,7 @@ module.exports.getListByCart = asyncHandler(async function (req, res, next) {
     else {
         numberPage = 1
     }
-    let temp = create_date
+    let temp = 'create_date'
     if(filter === 'prod_created_date'){
         temp = 'create_date'
     }

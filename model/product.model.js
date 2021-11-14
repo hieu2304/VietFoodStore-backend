@@ -73,7 +73,7 @@ async function search(prodName, limit, offset) {
     const data = await knex.raw(`with product as (
 		SELECT *
 		FROM products
-		WHERE name like '%${prodName}'
+		WHERE name like '%${prodName}%'
 		limit ${limit}
 		offset ${offset}
 	)
