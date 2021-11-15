@@ -16,7 +16,7 @@ async function login(username, password) {
     }
     const result = {
         accId: authUser[0].id,
-        role: authUser[0].role_id === 2 ? 'ADM' : 'USER',
+        role: +authUser[0].role_id === 2 ? 'ADM' : 'USER',
         accStatus:+authUser[0].status
     }
     return result;
