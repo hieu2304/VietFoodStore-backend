@@ -4,7 +4,7 @@ const asyncHandler = require('express-async-handler');
 const jwtHelper = require('../lib/jwt');
 const validate = require('../lib/validate');
 const uploadfile = require('../lib/image');
-
+const imageValidator = require('../lib/validate_image')
 /**
  * controller get list account
  * @param {*} req 
@@ -15,7 +15,6 @@ module.exports.getAll = asyncHandler(async function (req, res, next) {
     if (!currentUser) {
         return res.status(401).send({ message: 'Invalid Token' });
     }
-    console.log(currentUser)
     const { page, limit } = req.query
     if (currentUser.role === 'ADM') {
         let results = await Account.getAll(currentUser);
@@ -230,15 +229,75 @@ module.exports.updatePassword = asyncHandler(async function (req, res, next) {
 });
 
 module.exports.updateImage = asyncHandler(async function (req, res, next) {
+    const { accId } = req.body
+	var avatar = req.files
+    const checkAvatar = avatar.image ? true : false
+    let accIdFlag = accId
     let currentUser = jwtHelper.decodeToken(req.headers["authorization"], process.env.SECRET_KEY);
-
     if (!currentUser) {
         return res.status(401).send({ message: 'Invalid Token' });
     }
+    const result = await Account.findById(accIdFlag)
+    if (result.length === 0) {
+		return res.status(400).json({
+			errorMessage: 'AccountId Is Invalid'
+		})
+	}
+    if (checkAvatar) {
+		var validImage = imageValidator.validateValidAvatar(avatar)
 
-    const resultImage= await uploadfile.avatarUploader(req.file, currentUser.accId, 'insert', null);
-    console.log('log');
-    console.log(resultImage)
+		if (validImage !== '') {
+			return res.status(400).json({
+				errorMessage: validImage,
+				statusCode: 1
+			})
+		}
 
-    return res.json({ image: resultImage });
+		if (result[0].avatar === null) {
+			await uploadfile.avatarUploader(avatar.image, accIdFlag, 'insert')
+		} else {
+			let promiseToUploadImage = new Promise(async function (resolve) {
+				await uploadfile.avatarUploader(avatar.image, accIdFlag, 'update', result[0].avatar)
+				resolve();
+			})
+			promiseToUploadImage.then(function () {
+				uploadfile.deleteImage(result[0].avatar)
+			})
+		}
+
+		return res.status(200).json({
+			statusCode: 0
+		})
+	} else {
+		return res.status(400).json({
+			errorMessage: 'Image File Is Require',
+			statusCode: 0
+		})
+	}
 });
+
+module.exports.deleteImage = asyncHandler(async function (req, res, next){
+	const { accId } = req.body
+
+	let accIdFlag = accId
+
+	const result = await Account.findById(accIdFlag)
+
+	if (result.length === 0) {
+		return res.status(400).json({
+			errorMessage: 'AccountId Is Invalid'
+		})
+	}
+
+	const deleteImage = {
+		avatar: null
+	}
+
+	await Account.deleteImage(accIdFlag,deleteImage)
+
+	uploadfile.deleteImage(result[0].avatar)
+
+	return res.status(200).json({
+		statusCode: 0
+	})
+})

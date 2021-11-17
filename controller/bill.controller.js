@@ -2,7 +2,7 @@ const Bill = require('../model/bill.model');
 const asyncHandler = require('express-async-handler');
 const validate = require("../lib/validate");
 const jwtHelper = require('../lib/jwt');
-
+const moment = require('moment');
 /**
  * controller getDetailBill
  * @param {*} req 
@@ -40,8 +40,8 @@ module.exports.getDetails = asyncHandler(async function (req, res, next) {
                 fullNameReceiver: billMaster.receiver_name,
                 phoneNumberReceiver: billMaster.receiver_phone,
                 noteReceiver: "",
-                createDate: billMaster.create_date,
-                expectedDate: billMaster.expected_date,
+                createDate: moment(billMaster.create_date).format('DD/MM/YYYY'),
+                expectedDate: moment(billMaster.expected_date).format('DD/MM/YYYY'),
             }
 
             //get detail bill
@@ -117,8 +117,8 @@ module.exports.getListBill = asyncHandler(async function (req, res, next) {
                 fullNameReceiver: billMaster.receiver_name,
                 phoneNumberReceiver: billMaster.receiver_phone,
                 noteReceiver: "",
-                createDate: billMaster.create_date,
-                expectedDate: billMaster.expected_date,
+                createDate: moment(billMaster.create_date).format('DD/MM/YYYY'),
+                expectedDate: moment(billMaster.expected_date).format('DD/MM/YYYY'),
             }
 
             //get detail bill

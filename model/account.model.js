@@ -40,7 +40,14 @@ async function updatePassword(password,id){
     const data = await knex('accounts').update(account).where('id',id);
     return data;
 }
-
+async function deleteImage(accIdFlag,deleteImage){
+    await knex('accounts').where({ id: accIdFlag }).update(deleteImage)
+}
+async function findById(id){
+    const info = await knex('accounts')
+		.where({ id: id })
+	return info
+}
 module.exports = {
     getAll,
     getAccount,
@@ -48,5 +55,7 @@ module.exports = {
     deleteAccount,
     updatePassword,
     updateAccount,
-    updateAccountStatus
+    updateAccountStatus,
+    deleteImage,
+    findById,
 };
