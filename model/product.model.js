@@ -1,5 +1,6 @@
 const knex = require('../util/knex');
 const _ = require('lodash');
+const imageService = require('../lib/image');
 
 async function getAll() {
     const data = await knex.from('products')
@@ -108,9 +109,41 @@ const findById = async (prodId) => {
 	const info = await knex('products').where({ id: prodId })
 	return info
 }
+const findway = async (prodName,prodCategoryID) => {
+    const info = await knex('products')
+		.where('name', prodName)
+		.andWhere('cate_id', prodCategoryID)
+    return info
+}
+
+const addway = async (prodName,prodCategoryID,prodAmount,prodPrice,prodDescription,images) => {
+    await knex('products').insert({
+		name: prodName,
+		cate_id: prodCategoryID,
+		amount: prodAmount,
+		price: prodPrice,
+		description: typeof prodDescription !== 'undefined' ? prodDescription : '',
+		create_date: moment().format('YYYY-MM-DD HH:mm:ss')
+	})
+		.returning('*')
+		.then(async (rows) => {
+			if (images != null) {
+				if (images.length === undefined) {// number of uploaded image is 1
+					await imageService.productUploader(images, rows[0].id, 'insert')
+				}
+				else {
+					for (let i = 0; i < images.length; i++) {
+						await imageService.productUploader(images[i], rows[0].id, 'insert')
+					}
+				}
+			}
+		})
+}
 module.exports = {
     getAll,
+    addway,
     findById,
+    findway,
     findAllImage,
     getDetail,
     findAll,

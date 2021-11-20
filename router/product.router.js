@@ -8,4 +8,5 @@ router.post('/list-best-sale',controller.getTopMonth);
 router.post('/list-suggestion',controller.getSuggestion);
 router.post('/list-by-cat',controller.getListByCart)
 router.post('/search',controller.search)
+router.post('/add',controller.addProduct)
 module.exports = router;

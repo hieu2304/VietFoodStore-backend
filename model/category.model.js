@@ -80,11 +80,16 @@ const findAllFather = async () => {
 const findChild = async (cateFather) => {
     const info = await knex('categories')
                     .where({ father_id: cateFather })
-
     return info
+}
+const findwayCate = async (prodCategoryID) => {
+    const info = await knex('categories')
+		.where('id', prodCategoryID)
+        return info;
 }
 module.exports = {
     getAll,
+    findwayCate,
     findById,
     findChild,
     findAllFather,

@@ -1,6 +1,9 @@
 const Product = require('../model/product.model');
 const asyncHandler = require('express-async-handler');
 const moment = require('moment');
+const Cate = require('../model/category.model');
+const uploadfile = require('../lib/image');
+const imageValidator = require('../lib/validate_image')
 /**
  * controller get all Product
  * @param {*} req 
@@ -423,4 +426,82 @@ module.exports.getListByCart = asyncHandler(async function (req, res, next) {
             statusCode: 1
         })
     }
+});
+
+module.exports.addProduct = asyncHandler(async function (req, res, next) {
+    const { prodName, prodCategoryID, prodAmount, prodPrice, prodDescription, prodStatus } = req.body
+	
+	var images = req.files //need to get image from input type file, name is 'image'
+    if (prodName === undefined || prodCategoryID === undefined || prodAmount === undefined || prodPrice === undefined) {
+		return res.status(400).json({
+			errorMessage: 'Some required fields are undefined ',
+			statusCode: 1
+		})
+	}
+    if (prodName === '' || prodCategoryID === '' || prodAmount === '' || prodPrice === '') {
+		return res.status(400).json({
+			errorMessage: 'Some required fields are blank ',
+			statusCode: 1
+		})
+	}
+	
+	if (prodName.length > 60) {
+		return res.status(400).json({
+			errorMessage: 'Product name accept only the length smaller or equal than 60',
+			statusCode: 1
+		})
+	}
+    if (prodDescription != undefined && prodDescription.length > 1000) {
+		return res.status(400).json({
+			errorMessage: 'Product description accept only the length smaller than 1000',
+			statusCode: 1
+		})
+	}
+	
+	let regexPattern = /^\d+$/
+	let resultInteger = regexPattern.test(prodPrice);
+
+	if (!resultInteger) {
+		return res.status(400).json({
+			errorMessage: 'Product price must be integer !',
+			statusCode: 1
+		})
+	}
+    if (prodAmount > 10000 || prodAmount < 1) {
+		return res.status(400).json({
+			errorMessage: 'Ammount is not valid, must be smaller than 10000 and greater than 0!',
+			statusCode: 1
+		})
+	}
+
+	if (prodPrice > 1000000000 || prodPrice < 1000) {
+		return res.status(400).json({
+			errorMessage: 'Product price is not valid, must be smaller than 1000000000 or greater than 1000 !',
+			statusCode:1
+		})
+	}
+    var prod = await Product.findway(prodName,prodCategoryID);
+
+	if (prod.length !== 0) {
+		errorMessage = errorMessage + " Product record exists!"
+	}
+
+	var cat = Cate.findwayCate(prodCategoryID);
+
+	if (cat.length === 0) {
+		errorMessage = errorMessage + " Wrong category!"
+	}
+    if (images != null) {
+		var errorFromValidateImage = imageValidator.validateValidImage(images)
+
+		if (errorFromValidateImage !== '') {
+			errorMessage = errorMessage + errorFromValidateImage
+		}
+
+		images = uploadfile.getImage(images)
+	}
+    await Product.addway(prodName,prodCategoryID,prodAmount,prodPrice,prodDescription,images);
+    return res.status(200).json({
+		statusCode: 0
+	})
 });
